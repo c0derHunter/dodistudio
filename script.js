@@ -118,22 +118,31 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 (() => {
   const insertButton = () => {
-    if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
+    const existing = document.getElementById('custom-settings-btn');
+
+    // Hide button when disabled from Android.
+    if (window.SettingsBridge?.isSettingsBtnEnabled &&
+        !window.SettingsBridge.isSettingsBtnEnabled()) {
+      existing?.remove();
+      return;
+    }
+
+    // Already exists.
+    if (existing) return;
 
     const target = Array.from(document.querySelectorAll('span'))
-      .find(span => span.textContent === '');
+      .find(span => span.textContent === '����'); // Ganti dengan karakter asli.
 
     if (!target) return;
 
     const getFill = () => {
-      const color = document.querySelector('meta[name="theme-color"]')?.content?.toLowerCase();
+      const color = document.querySelector('meta[name="theme-color"]')
+        ?.content?.toLowerCase();
       return color === '#ffffff' ? '#65676b' : '#d0d0d0';
     };
 
     const container = target.closest('div[role="button"]');
     if (!container || !container.parentNode) return;
-
-    if (document.getElementById('custom-settings-btn')) return;
 
     const btn = document.createElement('button');
     btn.id = 'custom-settings-btn';
@@ -151,9 +160,11 @@ observer.observe(document.body, { childList: true, subtree: true });
       z-index: 9999;
       pointer-events: auto;
     `);
+
     btn.innerHTML = `
       <svg width="28" height="28" fill="${getFill()}" viewBox="0 0 24 24">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.586 2.586A2 2 0 0 1 11 2h2a2 2 0 0 1 2 2v.089l.473.196.063-.063a2.002 2.002 0 0 1 2.828 0l1.414 1.414a2 2 0 0 1 0 2.827l-.063.064.196.473H20a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-.089l-.196.473.063.063a2.002 2.002 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0l-.063-.063-.473.196V20a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-.089l-.473-.196-.063.063a2.002 2.002 0 0 1-2.828 0l-1.414-1.414a2 2 0 0 1 0-2.827l.063-.064L4.089 15H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.09l.195-.473-.063-.063a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.827 0l.064.063L9 4.089V4a2 2 0 0 1 .586-1.414ZM8 12a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"/>
+        <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M9.586 2.586A2 2 0 0 1 11 2h2a2 2 0 0 1 2 2v.089l.473.196.063-.063a2.002 2.002 0 0 1 2.828 0l1.414 1.414a2 2 0 0 1 0 2.827l-.063.064.196.473H20a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-.089l-.196.473.063.063a2.002 2.002 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0l-.063-.063-.473.196V20a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-.089l-.473-.196-.063.063a2.002 2.002 0 0 1-2.828 0l-1.414-1.414a2 2 0 0 1 0-2.827l.063-.064L4.089 15H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.09l.195-.473-.063-.063a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.827 0l.064.063L9 4.089V4a2 2 0 0 1 .586-1.414ZM8 12a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"/>
       </svg>
     `;
 
@@ -164,19 +175,11 @@ observer.observe(document.body, { childList: true, subtree: true });
 
   insertButton();
 
-  const observer = new MutationObserver(() => {
-    const customBtn = document.getElementById('custom-settings-btn');
-    const target = Array.from(document.querySelectorAll('span'))
-      .find(span => span.textContent === '');
-
-    if (target && !customBtn) {
-      insertButton();
-    }
-  });
-
-  observer.observe(document.body, {
+  new MutationObserver(() => {
+    insertButton();
+  }).observe(document.body, {
     childList: true,
-    subtree: true,
+    subtree: true
   });
 })();
 
