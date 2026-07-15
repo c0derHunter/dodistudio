@@ -284,7 +284,7 @@ observer.observe(document.body, { childList: true, subtree: true });
       btn.id = BUTTON_ID;
       btn.setAttribute('style', `
         position: ${findInsertionPoint().desktopTarget === null ? 'fixed' : 'block'};
-        top: 4px;
+        top: 6px;
         right: 100px;
         background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
 width: 36px;
