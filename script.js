@@ -280,11 +280,22 @@ observer.observe(document.body, { childList: true, subtree: true });
     };
 
     const createButton = () => {
-      const btn = document.createElement('button');
-      btn.id = BUTTON_ID;
-      btn.setAttribute('style', `
-  position: ${findInsertionPoint().desktopTarget === null ? 'fixed' : 'block'};
-  top: 8px;
+  const btn = document.createElement('button');
+  btn.id = BUTTON_ID;
+
+  const { anchorButton, desktopTarget } = findInsertionPoint();
+  const isFixed = desktopTarget === null;
+
+  let topValue = '8px';
+  if (isFixed && anchorButton) {
+    const rect = anchorButton.getBoundingClientRect();
+    const btnSize = 36;
+    topValue = `${rect.top + (rect.height - btnSize) / 2}px`;
+  }
+
+  btn.setAttribute('style', `
+  position: ${isFixed ? 'fixed' : 'block'};
+  top: ${topValue};
   right: 100px;
   width: 36px;
   height: 36px;
@@ -300,10 +311,10 @@ observer.observe(document.body, { childList: true, subtree: true });
   padding: 0;
   transition: background-color 0.15s ease;
 `);
-      btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
-      btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
-      return btn;
-    };
+  btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
+  btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
+  return btn;
+};
 
     const insertButton = () => {
   if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
