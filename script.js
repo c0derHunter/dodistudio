@@ -321,7 +321,7 @@ if (!document.getElementById('custom-logo-font')) {
   fontStyle.textContent = `
   @font-face {
     font-family: 'DodiLogoFont';
-    src: url('https://github.com/c0derHunter/files/raw/refs/heads/studio/dodi_logo.ttf') format('truetype');
+    src: url('https://cdn.jsdelivr.net/gh/c0derHunter/files@studio/dodi_logo.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
