@@ -319,10 +319,8 @@ observer.observe(document.body, { childList: true, subtree: true });
   if (!window.SettingsBridge?.isLogoHidden || !window.SettingsBridge.isLogoHidden()) return;
 
   const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-  if (logoBtn && logoBtn.style.display !== 'none') {
-    const rect = logoBtn.getBoundingClientRect();
-    alert('logoBtn size: ' + rect.width + 'x' + rect.height + '\nchildren: ' + logoBtn.children.length + '\nHTML: ' + logoBtn.outerHTML.substring(0, 200));
-    logoBtn.style.display = 'none';
+  if (logoBtn && logoBtn.style.visibility !== 'hidden') {
+    logoBtn.style.visibility = 'hidden';
   }
 };
 
