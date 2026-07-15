@@ -362,16 +362,22 @@
 };
 
     insertButton();
+hideLogo();
+
+if (window.isFeed()) insertButton();
 applyCustomLogo();
 
 const observer = new MutationObserver(() => {
-  if (!document.getElementById(BUTTON_ID) && isFeed()) {
-    insertButton();
+  const btn = document.getElementById(BUTTON_ID);
+  if (window.isFeed()) {
+    if (!btn) insertButton();
+  } else {
+    if (btn) btn.remove();
   }
   applyCustomLogo();
 });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+observer.observe(document.body, { childList: true, subtree: true });
 
     // Observer for theme-color changes
     const themeMeta = document.querySelector('meta[name="theme-color"]');
