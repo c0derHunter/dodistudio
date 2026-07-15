@@ -327,6 +327,12 @@ if (!document.getElementById('custom-logo-font')) {
     }
   `;
   document.head.appendChild(fontStyle);
+
+  document.fonts.load('16px DodiLogoFont').then(() => {
+    alert('Font loaded: ' + document.fonts.check('16px DodiLogoFont'));
+  }).catch(err => {
+    alert('Font load FAILED: ' + err.message);
+  });
 }
 
     const applyCustomLogo = () => {
