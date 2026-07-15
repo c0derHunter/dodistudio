@@ -267,16 +267,16 @@ observer.observe(document.body, { childList: true, subtree: true });
       if (svg) svg.setAttribute('fill', getFillColor());
     };
 
-    const findInsertionPoint = () => {
+const findInsertionPoint = () => {
       const iconSpan = Array.from(document.querySelectorAll('span'))
         .find(span => span.textContent === '󱥊');
-      const container = iconSpan?.closest('div[role="button"]')?.parentNode;
+      const anchorButton = iconSpan?.closest('div[role="button"]');
 
       const desktopTarget = document.querySelector(
         '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
       );
 
-      return { container, desktopTarget };
+      return { anchorButton, desktopTarget };
     };
 
     const createButton = () => {
@@ -304,14 +304,14 @@ observer.observe(document.body, { childList: true, subtree: true });
     };
 
     const insertButton = () => {
-  if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
-  if (document.getElementById(BUTTON_ID)) return;
+      if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
+      if (document.getElementById(BUTTON_ID)) return;
 
-      const { container, desktopTarget } = findInsertionPoint();
+      const { anchorButton, desktopTarget } = findInsertionPoint();
       const button = createButton();
 
       if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
-      else if (container) container.insertBefore(button, container.firstChild);
+      else if (anchorButton?.parentNode) anchorButton.parentNode.insertBefore(button, anchorButton);
     };
 
     insertButton();
