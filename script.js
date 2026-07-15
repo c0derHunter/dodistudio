@@ -322,6 +322,23 @@ height: 36px;
       }
     });
 
+      const hideLogo = () => {
+      if (!window.SettingsBridge?.isLogoHidden || !window.SettingsBridge.isLogoHidden()) return;
+
+      const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+      if (logoBtn && logoBtn.style.display !== 'none') logoBtn.style.display = 'none';
+    };
+
+    insertButton();
+    hideLogo(); // ⬅️ TAMBAHIN pemanggilan awal ini juga, sejajar sama insertButton()
+
+    const observer = new MutationObserver(() => {
+      if (!document.getElementById(BUTTON_ID) && isFeed()) {
+        insertButton();
+      }
+      hideLogo(); // ⬅️ TAMBAHIN baris ini di dalam observer callback
+    });
+
     observer.observe(document.body, { childList: true, subtree: true });
 
     // Observer for theme-color changes
