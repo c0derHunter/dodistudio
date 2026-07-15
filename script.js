@@ -268,18 +268,20 @@ observer.observe(document.body, { childList: true, subtree: true });
     };
 
     const findInsertionPoint = () => {
+  setTimeout(() => {
+    const allClickable = Array.from(document.querySelectorAll('div[role="button"], a[role="button"], a'));
+    
+    const labels = allClickable
+      .map((btn, i) => {
+        const label = btn.getAttribute('aria-label') || '(no label)';
+        return `${i}: "${label}"`;
+      })
+      .join('\n');
+
+    alert('DELAYED - All clickable (' + allClickable.length + ' total):\n' + labels.substring(0, 1500));
+  }, 2000);
+
   const allButtons = Array.from(document.querySelectorAll('div[role="button"]'));
-  
-  const labels = allButtons
-    .map((btn, i) => {
-      const label = btn.getAttribute('aria-label') || '(no label)';
-      const preview = label === '(no label)' ? btn.outerHTML.substring(0, 80) : '';
-      return `${i}: "${label}" ${preview}`;
-    })
-    .join('\n');
-
-  alert('All buttons (' + allButtons.length + ' total):\n' + labels);
-
   const anchorButton = allButtons.find(btn => {
     const label = btn.getAttribute('aria-label')?.toLowerCase() || '';
     return label.includes('pengaturan') || label.includes('setelan') || label.includes('settings');
