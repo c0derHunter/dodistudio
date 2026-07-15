@@ -361,8 +361,6 @@
   }
 };
 
-    insertButton();
-hideLogo();
 
 if (window.isFeed()) insertButton();
 applyCustomLogo();
