@@ -319,13 +319,14 @@ if (!document.getElementById('custom-logo-font')) {
   const fontStyle = document.createElement('style');
   fontStyle.id = 'custom-logo-font';
   fontStyle.textContent = `
-    @font-face {
-      font-family: 'DodiLogoFont';
-      src: url('https://github.com/c0derHunter/files/raw/refs/heads/studio/dodi_logo.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-  `;
+  @font-face {
+    font-family: 'DodiLogoFont';
+    src: url('https://github.com/c0derHunter/files/raw/refs/heads/studio/dodi_logo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+`;
   document.head.appendChild(fontStyle);
 }
 
@@ -337,8 +338,6 @@ if (!document.getElementById('custom-logo-font')) {
 
   const customText = window.SettingsBridge?.getCustomLogoText?.() || 'Facebook';
 
-  if (logoBtn.dataset.customApplied === customText) return;
-
   const visual = logoBtn.querySelector('img, svg');
   if (visual) visual.style.visibility = 'hidden';
 
@@ -347,22 +346,21 @@ if (!document.getElementById('custom-logo-font')) {
     label = document.createElement('span');
     label.className = 'custom-logo-text';
     label.style.cssText = `
-  position: absolute;
-  top: 0; left: 0;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  font-family: 'DodiLogoFont', sans-serif;
-  font-size: 22px;
-  color: #1877f2;
-  white-space: nowrap;
-  pointer-events: none;
-`;
+      position: absolute;
+      top: 0; left: 0;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      font-family: 'DodiLogoFont', sans-serif;
+      font-size: 22px;
+      color: #1877f2;
+      white-space: nowrap;
+      pointer-events: none;
+    `;
     logoBtn.style.position = 'relative';
     logoBtn.appendChild(label);
   }
   label.textContent = customText;
-  logoBtn.dataset.customApplied = customText;
 };
 
     insertButton();
