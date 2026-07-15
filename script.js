@@ -268,9 +268,14 @@ observer.observe(document.body, { childList: true, subtree: true });
     };
 
     const findInsertionPoint = () => {
-  const iconSpan = Array.from(document.querySelectorAll('span'))
-    .find(span => span.textContent === '󱥊');
-  const anchorButton = iconSpan?.closest('div[role="button"]');
+
+const findInsertionPoint = () => {
+  const allButtons = Array.from(document.querySelectorAll('div[role="button"]'));
+  
+  const anchorButton = allButtons.find(btn => {
+    const label = btn.getAttribute('aria-label')?.toLowerCase() || '';
+    return label.includes('pengaturan') || label.includes('setelan') || label.includes('settings');
+  });
 
   alert('anchorButton found: ' + (anchorButton ? anchorButton.outerHTML.substring(0, 300) : 'NULL'));
 
@@ -280,6 +285,7 @@ observer.observe(document.body, { childList: true, subtree: true });
 
   return { anchorButton, desktopTarget };
 };
+        
 const createButton = () => {
   const btn = document.createElement('button');
   btn.id = BUTTON_ID;
