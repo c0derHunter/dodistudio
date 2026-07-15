@@ -321,18 +321,12 @@ if (!document.getElementById('custom-logo-font')) {
   fontStyle.textContent = `
     @font-face {
       font-family: 'DodiLogoFont';
-      src: url('file:///android_asset/fonts/dodi_logo.ttf') format('truetype');
+      src: url('https://github.com/c0derHunter/files/raw/refs/heads/studio/dodi_logo.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
     }
   `;
   document.head.appendChild(fontStyle);
-
-  document.fonts.load('16px DodiLogoFont').then(() => {
-    alert('Font loaded: ' + document.fonts.check('16px DodiLogoFont'));
-  }).catch(err => {
-    alert('Font load FAILED: ' + err.message);
-  });
 }
 
     const applyCustomLogo = () => {
