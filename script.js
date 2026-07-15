@@ -315,6 +315,20 @@ observer.observe(document.body, { childList: true, subtree: true });
       else if (container) container.insertBefore(button, container.firstChild);
     };
 
+if (!document.getElementById('custom-logo-font')) {
+  const fontStyle = document.createElement('style');
+  fontStyle.id = 'custom-logo-font';
+  fontStyle.textContent = `
+    @font-face {
+      font-family: 'DodiLogoFont';
+      src: url('file:///android_asset/fonts/dodi_logo.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+  `;
+  document.head.appendChild(fontStyle);
+}
+
     const applyCustomLogo = () => {
   if (!window.SettingsBridge?.isLogoHidden || !window.SettingsBridge.isLogoHidden()) return;
 
@@ -338,10 +352,8 @@ observer.observe(document.body, { childList: true, subtree: true });
   display: flex;
   align-items: center;
   height: 100%;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 700;
+  font-family: 'DodiLogoFont', sans-serif;
   font-size: 22px;
-  letter-spacing: -0.5px;
   color: #1877f2;
   white-space: nowrap;
   pointer-events: none;
