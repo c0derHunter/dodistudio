@@ -213,24 +213,28 @@
 })();
 
 // Hide annoying bottom banners
-const observer = new MutationObserver(() => {
+(function() {
+  if (window._bottomBannerObserverInit) return;
+  window._bottomBannerObserverInit = true;
 
-  if (location.pathname === '/'
-  && document.querySelector('div[role="button"][aria-label*="Facebook"]') === null) return;
+  const bannerObserver = new MutationObserver(() => {
+    if (location.pathname === '/'
+      && document.querySelector('div[role="button"][aria-label*="Facebook"]') === null) return;
 
-  const element = document.querySelector('.bottom.fixed-container');
-  if (
-    element &&
-    !element.hasAttribute('data-shift-on-keyboard-shown')
-  ) {
-    const heightAttr = element.getAttribute('data-actual-height');
-    if (heightAttr && parseInt(heightAttr, 10) < 80) {
-      element.style.display = 'none';
+    const element = document.querySelector('.bottom.fixed-container');
+    if (
+      element &&
+      !element.hasAttribute('data-shift-on-keyboard-shown')
+    ) {
+      const heightAttr = element.getAttribute('data-actual-height');
+      if (heightAttr && parseInt(heightAttr, 10) < 80) {
+        element.style.display = 'none';
+      }
     }
-  }
-});
+  });
 
-observer.observe(document.body, { childList: true, subtree: true });
+  bannerObserver.observe(document.body, { childList: true, subtree: true });
+})();
 
 
 // Hold Effect Script
@@ -285,7 +289,7 @@ observer.observe(document.body, { childList: true, subtree: true });
       btn.id = BUTTON_ID;
       btn.setAttribute('style', `
         position: ${findInsertionPoint().desktopTarget === null ? 'fixed' : 'block'};
-        top: 6px;
+        top: 5px;
         right: 100px;
         background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
         width: 36px;
@@ -336,7 +340,7 @@ observer.observe(document.body, { childList: true, subtree: true });
     label.className = 'custom-logo-text';
     label.style.cssText = `
       position: absolute;
-      top: 0; left: 0;
+      top: 0; left: 6px;
       display: flex;
       align-items: center;
       height: 100%;
