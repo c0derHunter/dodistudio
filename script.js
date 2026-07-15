@@ -14,7 +14,7 @@
         if (window.isDesktopMode()) return isHomeUrl;
 
         const hasSpecialButton = Array.from(document.querySelectorAll('[role="button"] span'))
-            .some(span => span.textContent === '󱥆');
+            .some(span => span.textContent === '����');
 
         return isHomeUrl && hasSpecialButton;
     };
@@ -270,7 +270,7 @@ observer.observe(document.body, { childList: true, subtree: true });
 
     const findInsertionPoint = () => {
       const iconSpan = Array.from(document.querySelectorAll('span'))
-        .find(span => span.textContent === '󱥊');
+        .find(span => span.textContent === '����');
       const container = iconSpan?.closest('div[role="button"]')?.parentNode;
 
       const desktopTarget = document.querySelector(
@@ -315,52 +315,24 @@ observer.observe(document.body, { childList: true, subtree: true });
       else if (container) container.insertBefore(button, container.firstChild);
     };
 
-
-
-    const applyCustomLogo = () => {
+    const hideLogo = () => {
   if (!window.SettingsBridge?.isLogoHidden || !window.SettingsBridge.isLogoHidden()) return;
 
   const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-  if (!logoBtn) return;
-
-  const customText = window.SettingsBridge?.getCustomLogoText?.() || 'Facebook';
-
-  const visual = logoBtn.querySelector('img, svg');
-  if (visual) visual.style.visibility = 'hidden';
-
-  let label = logoBtn.querySelector('.custom-logo-text');
-  if (!label) {
-    label = document.createElement('span');
-    label.className = 'custom-logo-text';
-    label.style.cssText = `
-  position: absolute;
-  top: 0; left: 0;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 700;
-  font-size: 26px;
-  letter-spacing: -0.5px;
-  color: #1877f2;
-  white-space: nowrap;
-  pointer-events: none;
-`;
-    logoBtn.style.position = 'relative';
-    logoBtn.appendChild(label);
+  if (logoBtn && logoBtn.style.visibility !== 'hidden') {
+    logoBtn.style.visibility = 'hidden';
   }
-  label.textContent = customText;
 };
 
     insertButton();
-applyCustomLogo();
+    hideLogo();
 
-const observer = new MutationObserver(() => {
-  if (!document.getElementById(BUTTON_ID) && isFeed()) {
-    insertButton();
-  }
-  applyCustomLogo();
-});
+    const observer = new MutationObserver(() => {
+      if (!document.getElementById(BUTTON_ID) && isFeed()) {
+        insertButton();
+      }
+      hideLogo();
+    });
 
     observer.observe(document.body, { childList: true, subtree: true });
 
