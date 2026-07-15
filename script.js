@@ -268,35 +268,21 @@ observer.observe(document.body, { childList: true, subtree: true });
     };
 
     const findInsertionPoint = () => {
-      const iconSpan = Array.from(document.querySelectorAll('span'))
-        .find(span => span.textContent === '󱥊');
-      const container = iconSpan?.closest('div[role="button"]')?.parentNode;
+  const iconSpan = Array.from(document.querySelectorAll('span'))
+    .find(span => span.textContent === '󱥊');
+  const anchorButton = iconSpan?.closest('div[role="button"]');
 
-      const desktopTarget = document.querySelector(
-        '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
-      );
+  const desktopTarget = document.querySelector(
+    '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
+  );
 
-      return { container, desktopTarget };
-    };
+  return { anchorButton, desktopTarget };
+};
 
-    const createButton = () => {
+const createButton = () => {
   const btn = document.createElement('button');
   btn.id = BUTTON_ID;
-
-  const { anchorButton, desktopTarget } = findInsertionPoint();
-  const isFixed = desktopTarget === null;
-
-  let topValue = '8px';
-  if (isFixed && anchorButton) {
-    const rect = anchorButton.getBoundingClientRect();
-    const btnSize = 36;
-    topValue = `${rect.top + (rect.height - btnSize) / 2}px`;
-  }
-
   btn.setAttribute('style', `
-  position: ${isFixed ? 'fixed' : 'block'};
-  top: ${topValue};
-  right: 100px;
   width: 36px;
   height: 36px;
   background-color: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
@@ -306,9 +292,10 @@ observer.observe(document.body, { childList: true, subtree: true });
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  flex-shrink: 0;
   pointer-events: auto;
   padding: 0;
+  margin: 0 4px;
   transition: background-color 0.15s ease;
 `);
   btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
@@ -316,16 +303,16 @@ observer.observe(document.body, { childList: true, subtree: true });
   return btn;
 };
 
-    const insertButton = () => {
+const insertButton = () => {
   if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
   if (document.getElementById(BUTTON_ID)) return;
 
-      const { container, desktopTarget } = findInsertionPoint();
-      const button = createButton();
+  const { anchorButton, desktopTarget } = findInsertionPoint();
+  const button = createButton();
 
-      if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
-      else if (container) container.insertBefore(button, container.firstChild);
-    };
+  if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
+  else if (anchorButton?.parentNode) anchorButton.parentNode.insertBefore(button, anchorButton);
+};
 
     insertButton();
 
