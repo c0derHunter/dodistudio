@@ -270,12 +270,17 @@ observer.observe(document.body, { childList: true, subtree: true });
     const findInsertionPoint = () => {
   const allButtons = Array.from(document.querySelectorAll('div[role="button"]'));
   
+  const labels = allButtons
+    .map((btn, i) => `${i}: "${btn.getAttribute('aria-label') || '(no label)'}"`)
+    .slice(0, 20)
+    .join('\n');
+
+  alert('All buttons:\n' + labels);
+
   const anchorButton = allButtons.find(btn => {
     const label = btn.getAttribute('aria-label')?.toLowerCase() || '';
     return label.includes('pengaturan') || label.includes('setelan') || label.includes('settings');
   });
-
-  alert('anchorButton found: ' + (anchorButton ? anchorButton.outerHTML.substring(0, 300) : 'NULL'));
 
   const desktopTarget = document.querySelector(
     '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
