@@ -321,7 +321,7 @@ observer.observe(document.body, { childList: true, subtree: true });
   const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
   if (!logoBtn) return;
 
-  const customText = window.SettingsBridge?.A0R?.() || 'Facebook';
+  const customText = window.SettingsBridge?.getCustomLogoText?.() || 'Facebook';
 
   if (logoBtn.dataset.customApplied === customText) return;
 
