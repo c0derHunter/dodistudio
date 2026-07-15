@@ -241,7 +241,8 @@ observer.observe(document.body, { childList: true, subtree: true });
 })();
 
 
-/* The below scripts are specific to com.ycngmn.Nobook application. */
+/* Application . */
+
 
 (() => {
   const onReady = (fn) => {
@@ -287,8 +288,8 @@ observer.observe(document.body, { childList: true, subtree: true });
         top: 6px;
         right: 100px;
         background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
-width: 36px;
-height: 36px;
+        width: 36px;
+        height: 36px;
         border: none;
         border-radius: 50%;
         cursor: pointer;
@@ -304,8 +305,8 @@ height: 36px;
     };
 
     const insertButton = () => {
-  if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
-  if (document.getElementById(BUTTON_ID)) return;
+      if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
+      if (document.getElementById(BUTTON_ID)) return;
 
       const { container, desktopTarget } = findInsertionPoint();
       const button = createButton();
@@ -314,29 +315,6 @@ height: 36px;
       else if (container) container.insertBefore(button, container.firstChild);
     };
 
-    insertButton();
-
-    const observer = new MutationObserver(() => {
-      if (!document.getElementById(BUTTON_ID) && isFeed()) {
-        insertButton();
-      }
-    });
-    
- 
-    
-
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    const hideLogo = () => {
-      if (!window.SettingsBridge?.isLogoHidden || !window.SettingsBridge.isLogoHidden()) return;
-
-      const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-      if (logoBtn && logoBtn.style.display !== 'none') logoBtn.style.display = 'none';
-    };
-
-    insertButton();
-    hideLogo(); 
-    
     const hideLogo = () => {
       if (!window.SettingsBridge?.isLogoHidden || !window.SettingsBridge.isLogoHidden()) return;
 
@@ -365,6 +343,7 @@ height: 36px;
       });
     }
   });
+})();
 
 
 // Color Extraction Script
