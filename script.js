@@ -315,13 +315,40 @@ observer.observe(document.body, { childList: true, subtree: true });
       else if (container) container.insertBefore(button, container.firstChild);
     };
 
-    const hideLogo = () => {
+    const applyCustomLogo = () => {
   if (!window.SettingsBridge?.isLogoHidden || !window.SettingsBridge.isLogoHidden()) return;
 
   const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-  if (logoBtn && logoBtn.style.visibility !== 'hidden') {
-    logoBtn.style.visibility = 'hidden';
+  if (!logoBtn) return;
+
+  const customText = window.SettingsBridge?.A0R?.() || 'Facebook';
+
+  if (logoBtn.dataset.customApplied === customText) return;
+
+  const visual = logoBtn.querySelector('img, svg');
+  if (visual) visual.style.visibility = 'hidden';
+
+  let label = logoBtn.querySelector('.custom-logo-text');
+  if (!label) {
+    label = document.createElement('span');
+    label.className = 'custom-logo-text';
+    label.style.cssText = `
+      position: absolute;
+      top: 0; left: 0;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      font-weight: bold;
+      font-size: 20px;
+      color: #1877f2;
+      white-space: nowrap;
+      pointer-events: none;
+    `;
+    logoBtn.style.position = 'relative';
+    logoBtn.appendChild(label);
   }
+  label.textContent = customText;
+  logoBtn.dataset.customApplied = customText;
 };
 
     insertButton();
