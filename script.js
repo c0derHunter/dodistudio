@@ -267,22 +267,25 @@ observer.observe(document.body, { childList: true, subtree: true });
       if (svg) svg.setAttribute('fill', getFillColor());
     };
 
-const findInsertionPoint = () => {
+    const findInsertionPoint = () => {
       const iconSpan = Array.from(document.querySelectorAll('span'))
         .find(span => span.textContent === '󱥊');
-      const anchorButton = iconSpan?.closest('div[role="button"]');
+      const container = iconSpan?.closest('div[role="button"]')?.parentNode;
 
       const desktopTarget = document.querySelector(
         '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
       );
 
-      return { anchorButton, desktopTarget };
+      return { container, desktopTarget };
     };
 
     const createButton = () => {
       const btn = document.createElement('button');
       btn.id = BUTTON_ID;
       btn.setAttribute('style', `
+  position: ${findInsertionPoint().desktopTarget === null ? 'fixed' : 'block'};
+  top: 8px;
+  right: 100px;
   width: 36px;
   height: 36px;
   background-color: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
@@ -292,10 +295,9 @@ const findInsertionPoint = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  z-index: 9999;
   pointer-events: auto;
   padding: 0;
-  margin: 0 4px;
   transition: background-color 0.15s ease;
 `);
       btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
@@ -304,14 +306,14 @@ const findInsertionPoint = () => {
     };
 
     const insertButton = () => {
-      if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
-      if (document.getElementById(BUTTON_ID)) return;
+  if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
+  if (document.getElementById(BUTTON_ID)) return;
 
-      const { anchorButton, desktopTarget } = findInsertionPoint();
+      const { container, desktopTarget } = findInsertionPoint();
       const button = createButton();
 
       if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
-      else if (anchorButton?.parentNode) anchorButton.parentNode.insertBefore(button, anchorButton);
+      else if (container) container.insertBefore(button, container.firstChild);
     };
 
     insertButton();
