@@ -268,30 +268,14 @@ observer.observe(document.body, { childList: true, subtree: true });
     };
 
     const findInsertionPoint = () => {
-  setTimeout(() => {
-    const allClickable = Array.from(document.querySelectorAll('div[role="button"], a[role="button"], a'));
-    
-    const labels = allClickable
-      .map((btn, i) => {
-        const label = btn.getAttribute('aria-label') || '(no label)';
-        return `${i}: "${label}"`;
-      })
-      .join('\n');
-
-    alert('DELAYED - All clickable (' + allClickable.length + ' total):\n' + labels.substring(0, 1500));
-  }, 2000);
-
-  const allButtons = Array.from(document.querySelectorAll('div[role="button"]'));
-  const anchorButton = allButtons.find(btn => {
-    const label = btn.getAttribute('aria-label')?.toLowerCase() || '';
-    return label.includes('pengaturan') || label.includes('setelan') || label.includes('settings');
-  });
+  const searchButton = Array.from(document.querySelectorAll('div[role="button"]'))
+    .find(btn => btn.getAttribute('aria-label') === 'Cari di Facebook');
 
   const desktopTarget = document.querySelector(
     '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
   );
 
-  return { anchorButton, desktopTarget };
+  return { anchorButton: searchButton, desktopTarget };
 };
 
 const createButton = () => {
@@ -326,7 +310,7 @@ const insertButton = () => {
   const button = createButton();
 
   if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
-  else if (anchorButton?.parentNode) anchorButton.parentNode.insertBefore(button, anchorButton);
+  else if (anchorButton?.parentNode) anchorButton.parentNode.insertBefore(button, anchorButton.nextSibling);
 };
 
     insertButton();
