@@ -352,14 +352,14 @@ observer.observe(document.body, { childList: true, subtree: true });
 };
 
     insertButton();
-    hideLogo();
+applyCustomLogo();
 
-    const observer = new MutationObserver(() => {
-      if (!document.getElementById(BUTTON_ID) && isFeed()) {
-        insertButton();
-      }
-      hideLogo();
-    });
+const observer = new MutationObserver(() => {
+  if (!document.getElementById(BUTTON_ID) && isFeed()) {
+    insertButton();
+  }
+  applyCustomLogo();
+});
 
     observer.observe(document.body, { childList: true, subtree: true });
 
