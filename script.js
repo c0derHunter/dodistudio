@@ -213,28 +213,24 @@
 })();
 
 // Hide annoying bottom banners
-(function() {
-  if (window._bottomBannerObserverInit) return;
-  window._bottomBannerObserverInit = true;
+const observer = new MutationObserver(() => {
 
-  const bannerObserver = new MutationObserver(() => {
-    if (location.pathname === '/'
-      && document.querySelector('div[role="button"][aria-label*="Facebook"]') === null) return;
+  if (location.pathname === '/'
+  && document.querySelector('div[role="button"][aria-label*="Facebook"]') === null) return;
 
-    const element = document.querySelector('.bottom.fixed-container');
-    if (
-      element &&
-      !element.hasAttribute('data-shift-on-keyboard-shown')
-    ) {
-      const heightAttr = element.getAttribute('data-actual-height');
-      if (heightAttr && parseInt(heightAttr, 10) < 80) {
-        element.style.display = 'none';
-      }
+  const element = document.querySelector('.bottom.fixed-container');
+  if (
+    element &&
+    !element.hasAttribute('data-shift-on-keyboard-shown')
+  ) {
+    const heightAttr = element.getAttribute('data-actual-height');
+    if (heightAttr && parseInt(heightAttr, 10) < 80) {
+      element.style.display = 'none';
     }
-  });
+  }
+});
 
-  bannerObserver.observe(document.body, { childList: true, subtree: true });
-})();
+observer.observe(document.body, { childList: true, subtree: true });
 
 
 // Hold Effect Script
@@ -330,30 +326,35 @@
   const customText = window.SettingsBridge?.getCustomLogoText?.() || 'Facebook';
 
   const visual = logoBtn.querySelector('img, svg');
-  if (visual) visual.style.visibility = 'hidden';
+  if (visual && visual.style.visibility !== 'hidden') {
+    visual.style.visibility = 'hidden';
+  }
 
   let label = logoBtn.querySelector('.custom-logo-text');
   if (!label) {
     label = document.createElement('span');
     label.className = 'custom-logo-text';
     label.style.cssText = `
-  position: absolute;
-  top: 0; left: 0;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 700;
-  font-size: 23px;
-  letter-spacing: -0.5px;
-  color: #1877f2;
-  white-space: nowrap;
-  pointer-events: none;
-`;
+      position: absolute;
+      top: 0; left: 0;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: 25px;
+      letter-spacing: -0.5px;
+      color: #1877f2;
+      white-space: nowrap;
+      pointer-events: none;
+    `;
     logoBtn.style.position = 'relative';
     logoBtn.appendChild(label);
   }
-  label.textContent = customText;
+
+  if (label.textContent !== customText) {
+    label.textContent = customText;
+  }
 };
 
     insertButton();
