@@ -272,13 +272,14 @@ observer.observe(document.body, { childList: true, subtree: true });
     .find(span => span.textContent === '󱥊');
   const anchorButton = iconSpan?.closest('div[role="button"]');
 
+  alert('anchorButton found: ' + (anchorButton ? anchorButton.outerHTML.substring(0, 300) : 'NULL'));
+
   const desktopTarget = document.querySelector(
     '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
   );
 
   return { anchorButton, desktopTarget };
 };
-
 const createButton = () => {
   const btn = document.createElement('button');
   btn.id = BUTTON_ID;
