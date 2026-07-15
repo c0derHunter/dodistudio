@@ -268,8 +268,6 @@ observer.observe(document.body, { childList: true, subtree: true });
     };
 
     const findInsertionPoint = () => {
-
-const findInsertionPoint = () => {
   const allButtons = Array.from(document.querySelectorAll('div[role="button"]'));
   
   const anchorButton = allButtons.find(btn => {
@@ -285,7 +283,7 @@ const findInsertionPoint = () => {
 
   return { anchorButton, desktopTarget };
 };
-        
+
 const createButton = () => {
   const btn = document.createElement('button');
   btn.id = BUTTON_ID;
