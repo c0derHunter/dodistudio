@@ -268,50 +268,49 @@ observer.observe(document.body, { childList: true, subtree: true });
     };
 
     const findInsertionPoint = () => {
-  const searchButton = Array.from(document.querySelectorAll('div[role="button"]'))
-    .find(btn => btn.getAttribute('aria-label') === 'Cari di Facebook');
+      const iconSpan = Array.from(document.querySelectorAll('span'))
+        .find(span => span.textContent === '󱥊');
+      const container = iconSpan?.closest('div[role="button"]')?.parentNode;
 
-  const desktopTarget = document.querySelector(
-    '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
-  );
+      const desktopTarget = document.querySelector(
+        '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
+      );
 
-  return { anchorButton: searchButton, desktopTarget };
-};
+      return { container, desktopTarget };
+    };
 
-const createButton = () => {
-  const btn = document.createElement('button');
-  btn.id = BUTTON_ID;
-  btn.setAttribute('style', `
-  width: 36px;
-  height: 36px;
-  background-color: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  pointer-events: auto;
-  padding: 0;
-  margin: 0 4px;
-  transition: background-color 0.15s ease;
-`);
-  btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
-  btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
-  return btn;
-};
+    const createButton = () => {
+      const btn = document.createElement('button');
+      btn.id = BUTTON_ID;
+      btn.setAttribute('style', `
+        position: ${findInsertionPoint().desktopTarget === null ? 'fixed' : 'block'};
+        top: 8px;
+        right: 100px;
+        background: transparent;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        pointer-events: auto;
+      `);
+      btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
+      btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
+      return btn;
+    };
 
-const insertButton = () => {
+    const insertButton = () => {
   if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
   if (document.getElementById(BUTTON_ID)) return;
 
-  const { anchorButton, desktopTarget } = findInsertionPoint();
-  const button = createButton();
+      const { container, desktopTarget } = findInsertionPoint();
+      const button = createButton();
 
-  if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
-  else if (anchorButton?.parentNode) anchorButton.parentNode.insertBefore(button, anchorButton.nextSibling);
-};
+      if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
+      else if (container) container.insertBefore(button, container.firstChild);
+    };
 
     insertButton();
 
