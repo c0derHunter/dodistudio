@@ -321,8 +321,13 @@ height: 36px;
         insertButton();
       }
     });
+    
+ 
+    
 
-      const hideLogo = () => {
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    const hideLogo = () => {
       if (!window.SettingsBridge?.isLogoHidden || !window.SettingsBridge.isLogoHidden()) return;
 
       const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
@@ -350,7 +355,6 @@ height: 36px;
       });
     }
   });
-})();
 
 
 // Color Extraction Script
