@@ -340,7 +340,7 @@ observer.observe(document.body, { childList: true, subtree: true });
   height: 100%;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 700;
-  font-size: 26px;
+  font-size: 23px;
   letter-spacing: -0.5px;
   color: #1877f2;
   white-space: nowrap;
