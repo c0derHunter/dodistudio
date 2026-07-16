@@ -310,19 +310,19 @@
   let iconSize;
 
   if (desktopTarget) {
-    // Desktop: lingkaran diperbesar biar sejajar ikon lain
+    // Desktop
     btn.setAttribute('style', `
       ${baseStyle}
       position: relative;
-      width: 43px;
-      height: 43px;
-       margin-left: 2px;
-  margin-right: 6px;
+      width: 41px;
+      height: 41px;
+      margin-left: 0;
+      margin-right: 6px;
       flex-shrink: 0;
     `);
     iconSize = 24; // ikon lebih kecil dari lingkaran → padding proporsional
   } else {
-    // Mobile: lingkaran tetap, ikon dikecilkan biar ada padding
+    // Mobile
     btn.setAttribute('style', `
       ${baseStyle}
       position: fixed;
