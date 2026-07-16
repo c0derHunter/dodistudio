@@ -328,7 +328,7 @@
   const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
   if (!logoBtn) return;
 
-  const customText = window.SettingsBridge?.getCustomLogoText?.() || 'Facebook';
+  const customText = window.SettingsBridge?.A0R?.() || 'Facebook';
 
   const visual = logoBtn.querySelector('img, svg');
   if (visual && visual.style.visibility !== 'hidden') {
