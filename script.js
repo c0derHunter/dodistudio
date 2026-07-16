@@ -307,18 +307,21 @@
     pointer-events: auto;
   `;
 
+  let iconSize;
+
   if (desktopTarget) {
-    // Desktop: ikut alur normal di dalam row ikon nav
+    // Desktop: lingkaran diperbesar biar sejajar ikon lain
     btn.setAttribute('style', `
       ${baseStyle}
       position: relative;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       margin: 0 4px;
       flex-shrink: 0;
     `);
+    iconSize = 24; // ikon lebih kecil dari lingkaran → padding proporsional
   } else {
-    // Mobile: overlay, TIDAK ikut alur layout toolbar
+    // Mobile: lingkaran tetap, ikon dikecilkan biar ada padding
     btn.setAttribute('style', `
       ${baseStyle}
       position: fixed;
@@ -328,9 +331,13 @@
       height: 32px;
       z-index: 9999;
     `);
+    iconSize = 20; // dari 28 → 20, padding jadi ~6px tiap sisi
   }
 
-  btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
+  btn.innerHTML = ICON_SVG
+    .replace('%FILL%', getFillColor())
+    .replace('width="28" height="28"', `width="${iconSize}" height="${iconSize}"`);
+
   btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
   return btn;
 };
