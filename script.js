@@ -351,14 +351,15 @@
   const { container, desktopTarget } = findInsertionPoint();
 
   if (desktopTarget) {
-    alert(
-      "Jumlah child: " + desktopTarget.children.length +
-      "\n\n" +
-      [...desktopTarget.children]
-        .map((e, i) => i + " : " + e.tagName + " " + e.className)
-        .join("\n")
-    );
-  }
+  [...desktopTarget.children].forEach((el, i) => {
+    const label =
+      el.querySelector('[aria-label]')?.getAttribute('aria-label') ||
+      el.innerText ||
+      'NO LABEL';
+
+    alert(i + ' = ' + label);
+  });
+}
 
   const button = createButton();
 
