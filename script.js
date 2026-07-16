@@ -284,10 +284,6 @@
     '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
   );
 
-  if (window.isDesktopMode()) {
-    alert('DEBUG Desktop:\niconSpan: ' + (iconSpan ? 'FOUND' : 'NULL') + '\ncontainer: ' + (container ? 'FOUND' : 'NULL') + '\ndesktopTarget: ' + (desktopTarget ? 'FOUND' : 'NULL'));
-  }
-
   return { container, desktopTarget };
 };
 
@@ -403,16 +399,6 @@ else if (container)
   }
 };
 
-alert(
-  "URL: " + location.href +
-  "\nHost: " + location.hostname +
-  "\nPath: " + location.pathname
-);
-
-alert(
-  "Desktop: " + window.isDesktopMode() +
-  "\nFeed: " + window.isFeed()
-);
 
 if (window.isFeed()) insertButton();
 applyCustomLogo();
