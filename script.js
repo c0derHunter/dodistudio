@@ -312,14 +312,17 @@
   if (desktopTarget) {
     // Desktop
     btn.setAttribute('style', `
-      ${baseStyle}
-      position: relative;
-      width: 41px;
-      height: 41px;
-      margin-left: 0;
-      margin-right: 6px;
-      flex-shrink: 0;
-    `);
+  ${baseStyle}
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 0 2px;
+  padding: 0;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`);
     iconSize = 24; // ikon lebih kecil dari lingkaran → padding proporsional
   } else {
     // Mobile
