@@ -322,8 +322,10 @@
       const { container, desktopTarget } = findInsertionPoint();
       const button = createButton();
 
-      if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
-      else if (container) container.insertBefore(button, container.firstChild);
+      if (desktopTarget)
+    desktopTarget.insertBefore(button, desktopTarget.children[1] || null);
+else if (container)
+    container.insertBefore(button, container.firstChild);
     };
 
 
