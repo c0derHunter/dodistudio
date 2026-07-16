@@ -1,6 +1,7 @@
 // desktop mode identifier
 (() => {
     window.isDesktopMode = () => {
+        if (window.SettingsBridge?.isDesktopModeForced?.()) return true;
         return document.querySelector('html[id="facebook"]') !== null;
     }
 })();
