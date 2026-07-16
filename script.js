@@ -160,24 +160,18 @@
 // Enable press and hold caption selection and apply custom selection color.
 (() => {
   const SELECTABLE_CLASS = 'native-text';
+  let debugAlerted = false;
 
   const makeSelectable = (el) => {
     if (el.closest('div[role="button"]')) return;
-    if (el.dataset._selEnabled) return; // avoid re-processing same node repeatedly
+    if (el.dataset._selEnabled) return;
     el.dataset._selEnabled = '1';
 
-    // Standard + webkit prefixed, since some Android WebViews still need -webkit-.
     el.style.userSelect = 'text';
     el.style.webkitUserSelect = 'text';
     el.style.pointerEvents = 'auto';
-
-    // This is the key one for mobile: without it, iOS/Android WebViews
-    // often suppress the native "Copy / Select All" callout on long-press.
     el.style.webkitTouchCallout = 'default';
 
-    // Stop Facebook's own touch handlers (which usually call preventDefault()
-    // to show their reaction/context menu) from swallowing the long-press
-    // before the browser's native text-selection gesture can start.
     el.addEventListener('touchstart', (e) => {
       e.stopPropagation();
     }, { capture: true, passive: true });
@@ -188,7 +182,15 @@
   };
 
   const updateText = () => {
-    document.querySelectorAll(`.${SELECTABLE_CLASS}`).forEach(makeSelectable);
+    const found = document.querySelectorAll(`.${SELECTABLE_CLASS}`);
+
+    // DEBUG: cek sekali aja apakah selector ini nemu elemen sama sekali
+    if (!debugAlerted) {
+      debugAlerted = true;
+      alert('Jumlah elemen .native-text ditemukan: ' + found.length);
+    }
+
+    found.forEach(makeSelectable);
   };
 
   const selectionStyle = document.createElement('style');
@@ -209,6 +211,26 @@
     childList: true,
     subtree: true
   });
+
+  // DEBUG TAMBAHAN: pas kamu tahan-tekan di layar (di mana pun),
+  // ini akan kasih tahu class asli dari elemen yang kamu sentuh,
+  // termasuk parent-nya. Berguna kalau ternyata class teksnya BUKAN .native-text.
+  let pressTimer = null;
+  document.addEventListener('touchstart', (e) => {
+    const target = e.target;
+    pressTimer = setTimeout(() => {
+      const info = [
+        'TARGET: ' + target.tagName + '.' + (target.className || '(no class)'),
+        'PARENT: ' + target.parentElement?.tagName + '.' + (target.parentElement?.className || '(no class)'),
+        'GRANDPARENT: ' + target.parentElement?.parentElement?.tagName + '.' + (target.parentElement?.parentElement?.className || '(no class)')
+      ].join('\n');
+      alert(info);
+    }, 600); // 600ms simulasi "tahan lama"
+  }, { passive: true });
+
+  document.addEventListener('touchend', () => {
+    clearTimeout(pressTimer);
+  }, { passive: true });
 })();
 
 
