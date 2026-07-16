@@ -160,77 +160,58 @@
 // Enable press and hold caption selection and apply custom selection color.
 (() => {
   const SELECTABLE_CLASS = 'native-text';
-  let debugAlerted = false;
 
-  const makeSelectable = (el) => {
-    if (el.closest('div[role="button"]')) return;
-    if (el.dataset._selEnabled) return;
-    el.dataset._selEnabled = '1';
+  const applyStyles = (el) => {
+    if (el.dataset._selStyled) return;
+    el.dataset._selStyled = '1';
 
     el.style.userSelect = 'text';
     el.style.webkitUserSelect = 'text';
     el.style.pointerEvents = 'auto';
     el.style.webkitTouchCallout = 'default';
-
-    el.addEventListener('touchstart', (e) => {
-      e.stopPropagation();
-    }, { capture: true, passive: true });
-
-    el.addEventListener('touchmove', (e) => {
-      e.stopPropagation();
-    }, { capture: true, passive: true });
+    el.style.touchAction = 'auto';
   };
 
   const updateText = () => {
-    const found = document.querySelectorAll(`.${SELECTABLE_CLASS}`);
-
-    // DEBUG: cek sekali aja apakah selector ini nemu elemen sama sekali
-    if (!debugAlerted) {
-      debugAlerted = true;
-      alert('Jumlah elemen .native-text ditemukan: ' + found.length);
-    }
-
-    found.forEach(makeSelectable);
+    document.querySelectorAll(`.${SELECTABLE_CLASS}`).forEach(el => {
+      if (el.closest('div[role="button"]')) return;
+      applyStyles(el);
+    });
   };
 
-  const selectionStyle = document.createElement('style');
-  selectionStyle.textContent = `
+  const style = document.createElement('style');
+  style.textContent = `
     .${SELECTABLE_CLASS} {
       -webkit-touch-callout: default !important;
+      touch-action: auto !important;
     }
     .${SELECTABLE_CLASS}::selection {
       background: #ccc;
       color: black;
     }
   `;
-  document.head.appendChild(selectionStyle);
+  document.head.appendChild(style);
 
   updateText();
-
   new MutationObserver(updateText).observe(document.body, {
     childList: true,
     subtree: true
   });
 
-  // DEBUG TAMBAHAN: pas kamu tahan-tekan di layar (di mana pun),
-  // ini akan kasih tahu class asli dari elemen yang kamu sentuh,
-  // termasuk parent-nya. Berguna kalau ternyata class teksnya BUKAN .native-text.
-  let pressTimer = null;
-  document.addEventListener('touchstart', (e) => {
-    const target = e.target;
-    pressTimer = setTimeout(() => {
-      const info = [
-        'TARGET: ' + target.tagName + '.' + (target.className || '(no class)'),
-        'PARENT: ' + target.parentElement?.tagName + '.' + (target.parentElement?.className || '(no class)'),
-        'GRANDPARENT: ' + target.parentElement?.parentElement?.tagName + '.' + (target.parentElement?.parentElement?.className || '(no class)')
-      ].join('\n');
-      alert(info);
-    }, 600); // 600ms simulasi "tahan lama"
-  }, { passive: true });
+  // KUNCI PERBAIKAN:
+  // Pasang di window (paling luar), capture:true, supaya kita
+  // yang PERTAMA menangkap event ini sebelum turun ke listener
+  // React/Facebook yang biasanya nempel di elemen container.
+  const guardEvents = ['touchstart', 'touchmove', 'touchend', 'selectstart', 'contextmenu'];
 
-  document.addEventListener('touchend', () => {
-    clearTimeout(pressTimer);
-  }, { passive: true });
+  guardEvents.forEach(evt => {
+    window.addEventListener(evt, (e) => {
+      const isTextTarget = e.target?.closest?.(`.${SELECTABLE_CLASS}`);
+      if (isTextTarget && !e.target.closest('div[role="button"]')) {
+        e.stopPropagation();
+      }
+    }, { capture: true, passive: (evt !== 'selectstart' && evt !== 'contextmenu') });
+  });
 })();
 
 
