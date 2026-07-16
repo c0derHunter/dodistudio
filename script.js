@@ -345,17 +345,28 @@
 };
 
     const insertButton = () => {
-      if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
-      if (document.getElementById(BUTTON_ID)) return;
+  if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
+  if (document.getElementById(BUTTON_ID)) return;
 
-      const { container, desktopTarget } = findInsertionPoint();
-      const button = createButton();
+  const { container, desktopTarget } = findInsertionPoint();
 
-      if (desktopTarget)
+  if (desktopTarget) {
+    alert(
+      "Jumlah child: " + desktopTarget.children.length +
+      "\n\n" +
+      [...desktopTarget.children]
+        .map((e, i) => i + " : " + e.tagName + " " + e.className)
+        .join("\n")
+    );
+  }
+
+  const button = createButton();
+
+  if (desktopTarget)
     desktopTarget.insertBefore(button, desktopTarget.children[1] || null);
-else if (container)
+  else if (container)
     container.insertBefore(button, container.firstChild);
-    };
+};
 
 
 
