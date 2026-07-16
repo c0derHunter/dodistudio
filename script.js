@@ -316,7 +316,8 @@
   position: relative;
   width: 40px;
   height: 40px;
-  margin: 0 2px;
+  margin-left: 0;
+  margin-right: 4px;
   padding: 0;
   flex: 0 0 auto;
   display: flex;
@@ -348,29 +349,17 @@
 };
 
     const insertButton = () => {
-  if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
-  if (document.getElementById(BUTTON_ID)) return;
+      if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
+      if (document.getElementById(BUTTON_ID)) return;
 
-  const { container, desktopTarget } = findInsertionPoint();
+      const { container, desktopTarget } = findInsertionPoint();
+      const button = createButton();
 
-  if (desktopTarget) {
-  [...desktopTarget.children].forEach((el, i) => {
-    const label =
-      el.querySelector('[aria-label]')?.getAttribute('aria-label') ||
-      el.innerText ||
-      'NO LABEL';
-
-    alert(i + ' = ' + label);
-  });
-}
-
-  const button = createButton();
-
-  if (desktopTarget)
+      if (desktopTarget)
     desktopTarget.insertBefore(button, desktopTarget.children[1] || null);
-  else if (container)
+else if (container)
     container.insertBefore(button, container.firstChild);
-};
+    };
 
 
 
