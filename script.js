@@ -317,7 +317,7 @@
   width: 40px;
   height: 40px;
   margin-left: 0;
-  margin-right: 6px;
+  margin-right: 7px;
   padding: 0;
   flex: 0 0 auto;
   display: flex;
