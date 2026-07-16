@@ -274,16 +274,20 @@
     };
 
     const findInsertionPoint = () => {
-      const iconSpan = Array.from(document.querySelectorAll('span'))
-        .find(span => span.textContent === '󱥊');
-      const container = iconSpan?.closest('div[role="button"]')?.parentNode;
+  const iconSpan = Array.from(document.querySelectorAll('span'))
+    .find(span => span.textContent === '󱥊');
+  const container = iconSpan?.closest('div[role="button"]')?.parentNode;
 
-      const desktopTarget = document.querySelector(
-        '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
-      );
+  const desktopTarget = document.querySelector(
+    '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
+  );
 
-      return { container, desktopTarget };
-    };
+  if (window.isDesktopMode()) {
+    alert('DEBUG Desktop:\niconSpan: ' + (iconSpan ? 'FOUND' : 'NULL') + '\ncontainer: ' + (container ? 'FOUND' : 'NULL') + '\ndesktopTarget: ' + (desktopTarget ? 'FOUND' : 'NULL'));
+  }
+
+  return { container, desktopTarget };
+};
 
     const createButton = () => {
       const btn = document.createElement('button');
