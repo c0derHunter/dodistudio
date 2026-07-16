@@ -293,7 +293,7 @@
       const btn = document.createElement('button');
       btn.id = BUTTON_ID;
       btn.setAttribute('style', `
-        position: ${findInsertionPoint().desktopTarget === null ? 'fixed' : 'block'};
+        position: ${findInsertionPoint().desktopTarget ? 'relative' : 'fixed'};
         top: 5px;
         right: 100px;
         background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
@@ -370,17 +370,31 @@
 if (window.isFeed()) insertButton();
 applyCustomLogo();
 
+let scheduled = false;
+
 const observer = new MutationObserver(() => {
-  const btn = document.getElementById(BUTTON_ID);
-  if (window.isFeed()) {
-    if (!btn) insertButton();
-  } else {
-    if (btn) btn.remove();
-  }
-  applyCustomLogo();
+  if (scheduled) return;
+  scheduled = true;
+
+  requestAnimationFrame(() => {
+    scheduled = false;
+
+    const btn = document.getElementById(BUTTON_ID);
+
+    if (window.isFeed()) {
+      if (!btn) insertButton();
+    } else {
+      btn?.remove();
+    }
+
+    applyCustomLogo();
+  });
 });
 
-observer.observe(document.body, { childList: true, subtree: true });
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
 
     // Observer for theme-color changes
     const themeMeta = document.querySelector('meta[name="theme-color"]');
