@@ -9,16 +9,18 @@
 // Feed identifier
 (() => {
     window.isFeed = () => {
-        const isHomeUrl = window.location.pathname === '/' &&
-            (window.location.hostname === 'm.facebook.com' || window.location.hostname === 'www.facebook.com');
+    const isHomeUrl = window.location.pathname === '/' &&
+        (window.location.hostname === 'm.facebook.com' 
+          || window.location.hostname === 'www.facebook.com'
+          || window.location.hostname === 'web.facebook.com');
 
-        if (window.isDesktopMode()) return isHomeUrl;
+    if (window.isDesktopMode()) return isHomeUrl;
 
-        const hasSpecialButton = Array.from(document.querySelectorAll('[role="button"] span'))
-            .some(span => span.textContent === '󱥆');
+    const hasSpecialButton = Array.from(document.querySelectorAll('[role="button"] span'))
+        .some(span => span.textContent === '󱥆');
 
-        return isHomeUrl && hasSpecialButton;
-    };
+    return isHomeUrl && hasSpecialButton;
+};
 })();
 
 
