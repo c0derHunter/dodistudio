@@ -331,7 +331,7 @@
       height: 32px;
       z-index: 9999;
     `);
-    iconSize = 20; // dari 28 → 20, padding jadi ~6px tiap sisi
+    iconSize = 27; // dari 28 → 20, padding jadi ~6px tiap sisi
   }
 
   btn.innerHTML = ICON_SVG
