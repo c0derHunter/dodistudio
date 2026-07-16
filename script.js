@@ -327,8 +327,8 @@
       position: fixed;
       top: 6px;
       right: 100px;
-      width: 40px;
-      height: 40px;
+      width: 37px;
+      height: 37px;
       padding: 0;
       z-index: 9999;
     `);
