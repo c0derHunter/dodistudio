@@ -64,6 +64,36 @@
     );
   };
 
+  // Create toast notification
+  const createToast = (message, duration = 3000) => {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    Object.assign(toast.style, {
+      position: "fixed",
+      bottom: "20px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      color: "white",
+      padding: "8px 16px",
+      borderRadius: "20px",
+      zIndex: CONFIG.buttonZIndex,
+      fontFamily: "sans-serif",
+      fontSize: "14px"
+    });
+
+    document.body.appendChild(toast);
+
+    if (duration > 0) {
+      setTimeout(() => {
+        if (document.body.contains(toast)) {
+          document.body.removeChild(toast);
+        }
+      }, duration);
+    }
+
+    return toast;
+  };
 
   // Find the appropriate container for the content
   const findContentContainer = (element) => {
@@ -127,10 +157,15 @@
   };
 
   // Download media from URL
-  const downloadMedia = (url) => {
+  const downloadMedia = (url, processingToast) => {
     fetch(url)
       .then(response => response.blob())
       .then(blob => {
+        // Remove processing toast
+        if (document.body.contains(processingToast)) {
+          document.body.removeChild(processingToast);
+        }
+
         if (window.DownloadBridge && window.DownloadBridge.downloadBase64File) {
           const reader = new FileReader();
           reader.onloadend = function() {
@@ -145,17 +180,22 @@
         }
       })
       .catch(err => {
+        if (document.body.contains(processingToast)) {
+          document.body.removeChild(processingToast);
+        }
         console.error("Error downloading media:", err);
       });
   };
 
   // Extract and download videos or images
   const extractAndDownloadMedia = () => {
+    const processingToast = createToast("Download started...");
+
     // Find current media element
     const mediaElement = getCurrentMediaElement();
 
     if (mediaElement && mediaElement.src && mediaElement.src !== lastDownloadedUrl) {
-      downloadMedia(mediaElement.src);
+      downloadMedia(mediaElement.src, processingToast);
       lastDownloadedUrl = mediaElement.src;
       return;
     }
@@ -166,7 +206,7 @@
     // Find videos first
     const videoElement = container.querySelector("video:not([hidden])");
     if (videoElement && videoElement.src && videoElement.src !== lastDownloadedUrl) {
-      downloadMedia(videoElement.src);
+      downloadMedia(videoElement.src, processingToast);
       lastDownloadedUrl = videoElement.src;
       return;
     }
@@ -189,7 +229,7 @@
       });
 
     if (images.length > 0) {
-      downloadMedia(images[0].src);
+      downloadMedia(images[0].src, processingToast);
       lastDownloadedUrl = images[0].src;
       return;
     }
@@ -209,7 +249,7 @@
         const imageUrl = bgImage.replace(/^url\(['"](.+)['"]\)$/, "$1");
 
         if (imageUrl !== lastDownloadedUrl) {
-          downloadMedia(imageUrl);
+          downloadMedia(imageUrl, processingToast);
           lastDownloadedUrl = imageUrl;
           return;
         }
@@ -217,6 +257,9 @@
     }
 
     // Nothing found
+    if (document.body.contains(processingToast)) {
+      document.body.removeChild(processingToast);
+    }
     debugLog("No media content found to download");
   };
 
@@ -284,11 +327,8 @@
     let btn = document.getElementById(DOWNLOAD_BTN_ID);
     if (!btn) btn = createDownloadButton();
 
-    if (isInStoryOrReelView() && !isFeed()) {
+    if (isInStoryOrReelView()) {
       const mediaElement = getCurrentMediaElement();
-
-      // Always hide "Open in App" buttons
-      hideOpenAppButtons();
 
       if (mediaElement) {
         currentContentContainer = findContentContainer(mediaElement);
@@ -317,23 +357,6 @@
     // Hide button if not in relevant view
     btn.classList.remove("visible");
     currentContentContainer = null;
-  };
-
-  const hideOpenAppButtons = (root = document) => {
-        // Find all div[role="button"] elements
-        const buttons = root.querySelectorAll('div[role="button"]');
-
-        buttons.forEach(button => {
-          // Check if it contains div.fl.ac with a span containing the 󱥬 symbol
-          const flAcDiv = button.querySelector('div.fl.ac');
-
-          if (flAcDiv) {
-            const span = flAcDiv.querySelector('span');
-            if (span && span.textContent.includes('󱥬')) {
-              button.style.display = 'none';
-            }
-          }
-        });
   };
 
   // Main processing function
@@ -383,23 +406,4 @@
   } else {
     init();
   }
-})();
-
-(function() {
-  window.debugReelDetection = function() {
-    const videos = document.querySelectorAll('video');
-    const info = [];
-    videos.forEach((v, i) => {
-      const r = v.getBoundingClientRect();
-      info.push(`video[${i}]: ${Math.round(r.width)}x${Math.round(r.height)}`);
-      info.push(`  src="${v.src}"`);
-      info.push(`  paused=${v.paused} readyState=${v.readyState}`);
-      info.push(`  currentSrc="${v.currentSrc}"`);
-    });
-    alert(info.join("\n"));
-  };
-
-  setTimeout(() => {
-    window.debugReelDetection();
-  }, 3000);
 })();
