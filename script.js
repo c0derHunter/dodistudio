@@ -314,9 +314,10 @@
     btn.setAttribute('style', `
       ${baseStyle}
       position: relative;
-      width: 44px;
-      height: 44px;
-      margin: 0 4px;
+      width: 43px;
+      height: 43px;
+       margin-left: 2px;
+  margin-right: 6px;
       flex-shrink: 0;
     `);
     iconSize = 24; // ikon lebih kecil dari lingkaran → padding proporsional
@@ -325,7 +326,7 @@
     btn.setAttribute('style', `
       ${baseStyle}
       position: fixed;
-      top: 6px;
+      top: 5px;
       right: 100px;
       width: 37px;
       height: 37px;
