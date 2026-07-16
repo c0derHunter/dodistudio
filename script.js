@@ -292,11 +292,11 @@
 };
 
  const createButton = () => {
+  const { desktopTarget } = findInsertionPoint();
   const btn = document.createElement('button');
   btn.id = BUTTON_ID;
-  btn.setAttribute('style', `
-    width: 36px;
-    height: 36px;
+
+  const baseStyle = `
     background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
     border: none;
     border-radius: 50%;
@@ -304,10 +304,32 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
     pointer-events: auto;
-    margin: 0 4px;
-  `);
+  `;
+
+  if (desktopTarget) {
+    // Desktop: ikut alur normal di dalam row ikon nav
+    btn.setAttribute('style', `
+      ${baseStyle}
+      position: relative;
+      width: 36px;
+      height: 36px;
+      margin: 0 4px;
+      flex-shrink: 0;
+    `);
+  } else {
+    // Mobile: overlay, TIDAK ikut alur layout toolbar
+    btn.setAttribute('style', `
+      ${baseStyle}
+      position: fixed;
+      top: 6px;
+      right: 100px;
+      width: 32px;
+      height: 32px;
+      z-index: 9999;
+    `);
+  }
+
   btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
   btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
   return btn;
