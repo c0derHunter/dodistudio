@@ -159,61 +159,32 @@
 
 // Enable press and hold caption selection and apply custom selection color.
 (() => {
-  const SELECTABLE_CLASS = 'native-text';
-
-  const applyStyles = (el) => {
-    if (el.dataset._selStyled) return;
-    el.dataset._selStyled = '1';
-
+  const makeSelectable = (el) => {
+    if (el.closest('div[role="button"]')) return;
     el.style.userSelect = 'text';
-    el.style.webkitUserSelect = 'text';
     el.style.pointerEvents = 'auto';
-    el.style.webkitTouchCallout = 'default';
-    el.style.touchAction = 'auto';
   };
 
   const updateText = () => {
-    document.querySelectorAll(`.${SELECTABLE_CLASS}`).forEach(el => {
-      if (el.closest('div[role="button"]')) return;
-      applyStyles(el);
-    });
+    document.querySelectorAll('.native-text').forEach(makeSelectable);
   };
 
-  const style = document.createElement('style');
-  style.textContent = `
-    .${SELECTABLE_CLASS} {
-      -webkit-touch-callout: default !important;
-      touch-action: auto !important;
-    }
-    .${SELECTABLE_CLASS}::selection {
+  const selectionStyle = document.createElement('style');
+  selectionStyle.textContent = `
+    .native-text::selection {
       background: #ccc;
       color: black;
     }
   `;
-  document.head.appendChild(style);
+  document.head.appendChild(selectionStyle);
 
   updateText();
+
   new MutationObserver(updateText).observe(document.body, {
     childList: true,
     subtree: true
   });
-
-  // KUNCI PERBAIKAN:
-  // Pasang di window (paling luar), capture:true, supaya kita
-  // yang PERTAMA menangkap event ini sebelum turun ke listener
-  // React/Facebook yang biasanya nempel di elemen container.
-  const guardEvents = ['touchstart', 'touchmove', 'touchend', 'selectstart', 'contextmenu'];
-
-  guardEvents.forEach(evt => {
-    window.addEventListener(evt, (e) => {
-      const isTextTarget = e.target?.closest?.(`.${SELECTABLE_CLASS}`);
-      if (isTextTarget && !e.target.closest('div[role="button"]')) {
-        e.stopPropagation();
-      }
-    }, { capture: true, passive: (evt !== 'selectstart' && evt !== 'contextmenu') });
-  });
 })();
-
 
 // Enhance Loading Overlay Script
 (function() {
