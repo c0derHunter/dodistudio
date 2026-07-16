@@ -159,19 +159,44 @@
 
 // Enable press and hold caption selection and apply custom selection color.
 (() => {
+  const SELECTABLE_CLASS = 'native-text';
+
   const makeSelectable = (el) => {
     if (el.closest('div[role="button"]')) return;
+    if (el.dataset._selEnabled) return; // avoid re-processing same node repeatedly
+    el.dataset._selEnabled = '1';
+
+    // Standard + webkit prefixed, since some Android WebViews still need -webkit-.
     el.style.userSelect = 'text';
+    el.style.webkitUserSelect = 'text';
     el.style.pointerEvents = 'auto';
+
+    // This is the key one for mobile: without it, iOS/Android WebViews
+    // often suppress the native "Copy / Select All" callout on long-press.
+    el.style.webkitTouchCallout = 'default';
+
+    // Stop Facebook's own touch handlers (which usually call preventDefault()
+    // to show their reaction/context menu) from swallowing the long-press
+    // before the browser's native text-selection gesture can start.
+    el.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+    }, { capture: true, passive: true });
+
+    el.addEventListener('touchmove', (e) => {
+      e.stopPropagation();
+    }, { capture: true, passive: true });
   };
 
   const updateText = () => {
-    document.querySelectorAll('.native-text').forEach(makeSelectable);
+    document.querySelectorAll(`.${SELECTABLE_CLASS}`).forEach(makeSelectable);
   };
 
   const selectionStyle = document.createElement('style');
   selectionStyle.textContent = `
-    .native-text::selection {
+    .${SELECTABLE_CLASS} {
+      -webkit-touch-callout: default !important;
+    }
+    .${SELECTABLE_CLASS}::selection {
       background: #ccc;
       color: black;
     }
@@ -185,6 +210,7 @@
     subtree: true
   });
 })();
+
 
 // Enhance Loading Overlay Script
 (function() {
