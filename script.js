@@ -291,29 +291,27 @@
   return { container, desktopTarget };
 };
 
-    const createButton = () => {
-      const btn = document.createElement('button');
-      btn.id = BUTTON_ID;
-      btn.setAttribute('style', `
-        position: ${findInsertionPoint().desktopTarget ? 'relative' : 'fixed'};
-        top: 5px;
-        right: 100px;
-        background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
-        width: 36px;
-        height: 36px;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        pointer-events: auto;
-      `);
-      btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
-      btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
-      return btn;
-    };
+ const createButton = () => {
+  const btn = document.createElement('button');
+  btn.id = BUTTON_ID;
+  btn.setAttribute('style', `
+    width: 36px;
+    height: 36px;
+    background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    pointer-events: auto;
+    margin: 0 4px;
+  `);
+  btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
+  btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
+  return btn;
+};
 
     const insertButton = () => {
       if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
