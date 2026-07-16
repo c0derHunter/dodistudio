@@ -257,7 +257,6 @@
   };
 
   onReady(() => {
-      alert("onReady jalan");
     const BUTTON_ID = 'custom-settings-btn';
     const ICON_SVG = `
       <svg width="28" height="28" fill="%FILL%" viewBox="0 0 24 24">
@@ -367,7 +366,10 @@
   }
 };
 
-
+alert(
+  "Desktop: " + window.isDesktopMode() +
+  "\nFeed: " + window.isFeed()
+);
 if (window.isFeed()) insertButton();
 applyCustomLogo();
 
