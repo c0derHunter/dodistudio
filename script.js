@@ -327,8 +327,9 @@
       position: fixed;
       top: 6px;
       right: 100px;
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
+      padding: 0;
       z-index: 9999;
     `);
     iconSize = 27; // dari 28 → 20, padding jadi ~6px tiap sisi
