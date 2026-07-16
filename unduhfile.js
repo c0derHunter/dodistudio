@@ -386,41 +386,20 @@
 })();
 
 (function() {
-  const debugInfo = [];
+  window.debugReelDetection = function() {
+    const videos = document.querySelectorAll('video');
+    const info = [];
+    videos.forEach((v, i) => {
+      const r = v.getBoundingClientRect();
+      info.push(`video[${i}]: ${Math.round(r.width)}x${Math.round(r.height)}`);
+      info.push(`  src="${v.src}"`);
+      info.push(`  paused=${v.paused} readyState=${v.readyState}`);
+      info.push(`  currentSrc="${v.currentSrc}"`);
+    });
+    alert(info.join("\n"));
+  };
 
-  debugInfo.push("URL: " + location.href);
-  debugInfo.push("Path: " + location.pathname);
-
-  // Cek versi story indicator selectors
-  const storyIndicators = [
-    'div[data-sigil="story-viewer"]',
-    'div[data-sigil="story-popup-header"]',
-    'div[data-sigil="story-tray-item"]',
-    ".story_body_container",
-    ".story_viewer",
-    ".story-container",
-    'div[aria-label*="highlight"]',
-    'div[aria-label*="Highlight"]',
-    'div.x1ey2m1c.x9f619.xds687c.x17qophe.x10l6tqk.x13vifvy[role="presentation"]',
-    'div[data-pagelet="ProfilePhoto"]'
-  ];
-
-  storyIndicators.forEach(sel => {
-    const found = document.querySelector(sel);
-    debugInfo.push(sel.slice(0, 30) + "... => " + (found ? "FOUND" : "null"));
-  });
-
-  debugInfo.push("---");
-  debugInfo.push("dialog count: " + document.querySelectorAll('div[role="dialog"]').length);
-  debugInfo.push("reel aria-label: " + (document.querySelector('div[aria-label*="reel"]') ? "FOUND" : "null"));
-
-  const videos = document.querySelectorAll('video');
-  debugInfo.push("total <video>: " + videos.length);
-
-  videos.forEach((v, i) => {
-    const r = v.getBoundingClientRect();
-    debugInfo.push(`video[${i}]: ${Math.round(r.width)}x${Math.round(r.height)}, hidden=${v.hidden}, paused=${v.paused}`);
-  });
-
-  alert(debugInfo.join("\n"));
+  setTimeout(() => {
+    window.debugReelDetection();
+  }, 3000);
 })();
