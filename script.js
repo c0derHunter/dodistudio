@@ -367,9 +367,16 @@
 };
 
 alert(
+  "URL: " + location.href +
+  "\nHost: " + location.hostname +
+  "\nPath: " + location.pathname
+);
+
+alert(
   "Desktop: " + window.isDesktopMode() +
   "\nFeed: " + window.isFeed()
 );
+
 if (window.isFeed()) insertButton();
 applyCustomLogo();
 
