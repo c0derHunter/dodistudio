@@ -366,6 +366,7 @@ else if (container)
   if (!logoBtn) return;
 
   const customText = window.SettingsBridge?.A0R?.() || 'Facebook';
+  const customColor = window.SettingsBridge?.A0L?.() || '#1877f2';
 
   const visual = logoBtn.querySelector('img, svg');
   if (visual && visual.style.visibility !== 'hidden') {
@@ -386,7 +387,6 @@ else if (container)
       font-weight: 700;
       font-size: 25px;
       letter-spacing: -0.5px;
-      color: #1877f2;
       white-space: nowrap;
       pointer-events: none;
     `;
@@ -396,6 +396,9 @@ else if (container)
 
   if (label.textContent !== customText) {
     label.textContent = customText;
+  }
+  if (label.style.color !== customColor) {
+    label.style.color = customColor;
   }
 };
 
