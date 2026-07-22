@@ -421,7 +421,17 @@ else if (container)
 if (!window._debugTapLogged) {
   window._debugTapLogged = true;
   document.addEventListener('touchstart', (e) => {
-    alert('TAP DI: ' + (e.target.outerHTML || e.target.tagName).substring(0, 150));
+    const target = e.target;
+    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+    const isInsideLogo = logoBtn ? logoBtn.contains(target) : false;
+    const isLogoItself = target === logoBtn;
+    const parentChain = [];
+    let el = target;
+    for (let i = 0; i < 5 && el; i++) {
+      parentChain.push(el.tagName + (el.getAttribute('role') ? '[role=' + el.getAttribute('role') + ']' : '') + (el.getAttribute('aria-label') ? '[aria-label=' + el.getAttribute('aria-label') + ']' : ''));
+      el = el.parentElement;
+    }
+    alert('isLogoItself: ' + isLogoItself + '\nisInsideLogo: ' + isInsideLogo + '\nChain: ' + parentChain.join(' > '));
   }, { capture: true });
 }
       
