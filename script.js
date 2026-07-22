@@ -400,6 +400,17 @@ else if (container)
   if (label.style.color !== customColor) {
     label.style.color = customColor;
   }
+
+  // Tambah handler klik ke logoBtn (hanya sekali)
+  if (!logoBtn.dataset.drawerHandlerAttached) {
+    logoBtn.dataset.drawerHandlerAttached = 'true';
+    logoBtn.style.cursor = 'pointer';
+    logoBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.SettingsBridge?.openDrawer?.();
+    });
+  }
 };
 
 
