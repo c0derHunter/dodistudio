@@ -408,7 +408,7 @@ else if (container)
     logoBtn.addEventListener('click', (e) => {
   e.preventDefault();
   e.stopPropagation();
-  alert('LOGO CLICKED');
+  alert('Bridge exists: ' + !!window.SettingsBridge + ', openDrawer exists: ' + typeof window.SettingsBridge?.openDrawer);
   window.SettingsBridge?.openDrawer?.();
 });
   }
