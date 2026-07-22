@@ -406,16 +406,21 @@ else if (container)
   // Tambah handler klik ke label (bukan logoBtn) karena label ada di atas
   if (!label.dataset.drawerHandlerAttached) {
     label.dataset.drawerHandlerAttached = 'true';
+    let lastTrigger = 0;
     const handler = (e) => {
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
-      alert('LABEL TERTANGKAP: ' + e.type);
+      const now = Date.now();
+      if (now - lastTrigger < 500) return; // cegah double-trigger dari pointerdown+touchstart
+      lastTrigger = now;
+      window.SettingsBridge?.openDrawer?.();
     };
     label.addEventListener('pointerdown', handler, { capture: true });
     label.addEventListener('touchstart', handler, { capture: true, passive: false });
   }
 };
+
 
 if (window.isFeed()) insertButton();
 applyCustomLogo();
