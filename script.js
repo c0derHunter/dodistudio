@@ -418,6 +418,13 @@ else if (container)
   }
 };
 
+if (!window._debugTapLogged) {
+  window._debugTapLogged = true;
+  document.addEventListener('touchstart', (e) => {
+    alert('TAP DI: ' + (e.target.outerHTML || e.target.tagName).substring(0, 150));
+  }, { capture: true });
+}
+      
 
 if (window.isFeed()) insertButton();
 applyCustomLogo();
