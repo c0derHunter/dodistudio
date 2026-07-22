@@ -405,12 +405,16 @@ else if (container)
   if (!logoBtn.dataset.drawerHandlerAttached) {
     logoBtn.dataset.drawerHandlerAttached = 'true';
     logoBtn.style.cursor = 'pointer';
-    logoBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  alert('Bridge exists: ' + !!window.SettingsBridge + ', openDrawer exists: ' + typeof window.SettingsBridge?.openDrawer);
-  window.SettingsBridge?.openDrawer?.();
-});
+
+    const handler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      alert('TERTANGKAP: ' + e.type);
+    };
+
+    logoBtn.addEventListener('pointerdown', handler, { capture: true });
+    logoBtn.addEventListener('touchstart', handler, { capture: true, passive: false });
   }
 };
 
@@ -481,4 +485,4 @@ observer.observe(document.body, {
         reader.readAsDataURL(blob);
         return originalCreateObjectURL(blob);
     };
-})();
+})(); 
