@@ -388,7 +388,9 @@ else if (container)
       font-size: 25px;
       letter-spacing: -0.5px;
       white-space: nowrap;
-      pointer-events: none;
+      pointer-events: auto;
+      z-index: 99999;
+      cursor: pointer;
     `;
     logoBtn.style.position = 'relative';
     logoBtn.appendChild(label);
@@ -401,40 +403,19 @@ else if (container)
     label.style.color = customColor;
   }
 
-  // Tambah handler klik ke logoBtn (hanya sekali)
-  if (!logoBtn.dataset.drawerHandlerAttached) {
-    logoBtn.dataset.drawerHandlerAttached = 'true';
-    logoBtn.style.cursor = 'pointer';
-
+  // Tambah handler klik ke label (bukan logoBtn) karena label ada di atas
+  if (!label.dataset.drawerHandlerAttached) {
+    label.dataset.drawerHandlerAttached = 'true';
     const handler = (e) => {
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
-      alert('TERTANGKAP: ' + e.type);
+      alert('LABEL TERTANGKAP: ' + e.type);
     };
-
-    logoBtn.addEventListener('pointerdown', handler, { capture: true });
-    logoBtn.addEventListener('touchstart', handler, { capture: true, passive: false });
+    label.addEventListener('pointerdown', handler, { capture: true });
+    label.addEventListener('touchstart', handler, { capture: true, passive: false });
   }
-};
 
-if (!window._debugTapLogged) {
-  window._debugTapLogged = true;
-  document.addEventListener('touchstart', (e) => {
-    const target = e.target;
-    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-    const isInsideLogo = logoBtn ? logoBtn.contains(target) : false;
-    const isLogoItself = target === logoBtn;
-    const parentChain = [];
-    let el = target;
-    for (let i = 0; i < 5 && el; i++) {
-      parentChain.push(el.tagName + (el.getAttribute('role') ? '[role=' + el.getAttribute('role') + ']' : '') + (el.getAttribute('aria-label') ? '[aria-label=' + el.getAttribute('aria-label') + ']' : ''));
-      el = el.parentElement;
-    }
-    alert('isLogoItself: ' + isLogoItself + '\nisInsideLogo: ' + isInsideLogo + '\nChain: ' + parentChain.join(' > '));
-  }, { capture: true });
-}
-      
 
 if (window.isFeed()) insertButton();
 applyCustomLogo();
