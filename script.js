@@ -366,7 +366,7 @@ else if (container)
   if (!logoBtn) return;
 
   const customText = window.SettingsBridge?.A0R?.() || 'Facebook';
-  const customColor = window.SettingsBridge?.A0L?.() || '#1877f2';
+  const customColor = window.SettingsBridge?.getLogoColor?.() || '#1877f2';
 
   const visual = logoBtn.querySelector('img, svg');
   if (visual && visual.style.visibility !== 'hidden') {
@@ -399,6 +399,17 @@ else if (container)
   }
   if (label.style.color !== customColor) {
     label.style.color = customColor;
+  }
+
+  // Tambah handler klik ke logoBtn (hanya sekali)
+  if (!logoBtn.dataset.drawerHandlerAttached) {
+    logoBtn.dataset.drawerHandlerAttached = 'true';
+    logoBtn.style.cursor = 'pointer';
+    logoBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.SettingsBridge?.openDrawer?.();
+    });
   }
 };
 
