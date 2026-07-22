@@ -406,10 +406,11 @@ else if (container)
     logoBtn.dataset.drawerHandlerAttached = 'true';
     logoBtn.style.cursor = 'pointer';
     logoBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      window.SettingsBridge?.openDrawer?.();
-    });
+  e.preventDefault();
+  e.stopPropagation();
+  alert('LOGO CLICKED');
+  window.SettingsBridge?.openDrawer?.();
+});
   }
 };
 
