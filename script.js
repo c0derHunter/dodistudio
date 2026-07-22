@@ -415,7 +415,7 @@ else if (container)
     label.addEventListener('pointerdown', handler, { capture: true });
     label.addEventListener('touchstart', handler, { capture: true, passive: false });
   }
-
+};
 
 if (window.isFeed()) insertButton();
 applyCustomLogo();
