@@ -490,6 +490,44 @@ observer.observe(document.body, {
     };
 })(); 
 
+(function() {
+  const applyNavOrder = () => {
+    const swapEnabled = window.SettingsBridge?.isNavSwapEnabled?.() ?? false;
+
+    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+    const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
+      .find(span => span.textContent === '󱥆');
+    const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
+
+    if (!logoBtn || !homeRow) return;
+
+    const logoRow = logoBtn.parentElement;
+    const commonAncestor = homeRow.parentElement;
+
+    // safety check: pastikan memang sibling di parent yang sama
+    if (!commonAncestor || logoRow.parentElement !== commonAncestor) return;
+
+    if (swapEnabled) {
+      // ON: logo di atas, home row di bawah
+      if (commonAncestor.firstElementChild !== logoRow) {
+        commonAncestor.insertBefore(logoRow, homeRow);
+      }
+    } else {
+      // OFF: kembali normal (home row di atas, logo di bawah)
+      if (commonAncestor.firstElementChild !== homeRow) {
+        commonAncestor.insertBefore(homeRow, logoRow);
+      }
+    }
+  };
+
+  applyNavOrder();
+
+  new MutationObserver(() => applyNavOrder()).observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+})();    
+
 if (!window._debugLayoutLogged) {
   window._debugLayoutLogged = true;
   setTimeout(() => {
