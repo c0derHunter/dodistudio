@@ -9,16 +9,18 @@
 // Feed identifier
 (() => {
     window.isFeed = () => {
-        const isHomeUrl = window.location.pathname === '/' &&
-            (window.location.hostname === 'm.facebook.com' || window.location.hostname === 'www.facebook.com');
+    const isHomeUrl = window.location.pathname === '/' &&
+        (window.location.hostname === 'm.facebook.com' 
+          || window.location.hostname === 'www.facebook.com'
+          || window.location.hostname === 'web.facebook.com');
 
-        if (window.isDesktopMode()) return isHomeUrl;
+    if (window.isDesktopMode()) return isHomeUrl;
 
-        const hasSpecialButton = Array.from(document.querySelectorAll('[role="button"] span'))
-            .some(span => span.textContent === '����');
+    const hasSpecialButton = Array.from(document.querySelectorAll('[role="button"] span'))
+        .some(span => span.textContent === '󱥆');
 
-        return isHomeUrl && hasSpecialButton;
-    };
+    return isHomeUrl && hasSpecialButton;
+};
 })();
 
 
@@ -274,40 +276,73 @@
     };
 
     const findInsertionPoint = () => {
-      const iconSpan = Array.from(document.querySelectorAll('span'))
-        .find(span => span.textContent === '����');
-      const container = iconSpan?.closest('div[role="button"]')?.parentNode;
+  const iconSpan = Array.from(document.querySelectorAll('span'))
+    .find(span => span.textContent === '󱥊');
+  const container = iconSpan?.closest('div[role="button"]')?.parentNode;
 
-      const desktopTarget = document.querySelector(
-        '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
-      );
+  const desktopTarget = document.querySelector(
+    '.x6s0dn4.x78zum5.x1s65kcs.x1n2onr6.x1ja2u2z'
+  );
 
-      return { container, desktopTarget };
-    };
+  return { container, desktopTarget };
+};
 
-    const createButton = () => {
-      const btn = document.createElement('button');
-      btn.id = BUTTON_ID;
-      btn.setAttribute('style', `
-        position: ${findInsertionPoint().desktopTarget === null ? 'fixed' : 'block'};
-        top: 5px;
-        right: 100px;
-        background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
-        width: 36px;
-        height: 36px;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        pointer-events: auto;
-      `);
-      btn.innerHTML = ICON_SVG.replace('%FILL%', getFillColor());
-      btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
-      return btn;
-    };
+ const createButton = () => {
+  const { desktopTarget } = findInsertionPoint();
+  const btn = document.createElement('button');
+  btn.id = BUTTON_ID;
+
+  const baseStyle = `
+    background: ${getFillColor() === '#242526' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)'};
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+  `;
+
+  let iconSize;
+
+  if (desktopTarget) {
+    // Desktop
+    btn.setAttribute('style', `
+  ${baseStyle}
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-left: 0;
+  margin-right: 7px;
+  padding: 0;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`);
+    iconSize = 24; // ikon lebih kecil dari lingkaran → padding proporsional
+  } else {
+    // Mobile
+    btn.setAttribute('style', `
+      ${baseStyle}
+      position: fixed;
+      top: 5px;
+      right: 100px;
+      width: 37px;
+      height: 37px;
+      padding: 0;
+      z-index: 9999;
+    `);
+    iconSize = 27; // dari 28 → 20, padding jadi ~6px tiap sisi
+  }
+
+  btn.innerHTML = ICON_SVG
+    .replace('%FILL%', getFillColor())
+    .replace('width="28" height="28"', `width="${iconSize}" height="${iconSize}"`);
+
+  btn.onclick = () => SettingsBridge?.onSettingsToggle?.();
+  return btn;
+};
 
     const insertButton = () => {
       if (window.SettingsBridge?.isSettingsBtnEnabled && !window.SettingsBridge.isSettingsBtnEnabled()) return;
@@ -316,8 +351,10 @@
       const { container, desktopTarget } = findInsertionPoint();
       const button = createButton();
 
-      if (desktopTarget) desktopTarget.insertBefore(button, desktopTarget.firstChild);
-      else if (container) container.insertBefore(button, container.firstChild);
+      if (desktopTarget)
+    desktopTarget.insertBefore(button, desktopTarget.children[1] || null);
+else if (container)
+    container.insertBefore(button, container.firstChild);
     };
 
 
@@ -329,6 +366,7 @@
   if (!logoBtn) return;
 
   const customText = window.SettingsBridge?.A0R?.() || 'Facebook';
+  const customColor = window.SettingsBridge?.A0L?.() || '#1877f2';
 
   const visual = logoBtn.querySelector('img, svg');
   if (visual && visual.style.visibility !== 'hidden') {
@@ -349,9 +387,10 @@
       font-weight: 700;
       font-size: 25px;
       letter-spacing: -0.5px;
-      color: #1877f2;
       white-space: nowrap;
-      pointer-events: none;
+      pointer-events: auto;
+      z-index: 99999;
+      cursor: pointer;
     `;
     logoBtn.style.position = 'relative';
     logoBtn.appendChild(label);
@@ -360,23 +399,57 @@
   if (label.textContent !== customText) {
     label.textContent = customText;
   }
+  if (label.style.color !== customColor) {
+    label.style.color = customColor;
+  }
+
+  // Tambah handler klik ke label (bukan logoBtn) karena label ada di atas
+  if (!label.dataset.drawerHandlerAttached) {
+    label.dataset.drawerHandlerAttached = 'true';
+    let lastTrigger = 0;
+    const handler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      const now = Date.now();
+      if (now - lastTrigger < 500) return; // cegah double-trigger dari pointerdown+touchstart
+      lastTrigger = now;
+      window.SettingsBridge?.a?.();
+    };
+    label.addEventListener('pointerdown', handler, { capture: true });
+    label.addEventListener('touchstart', handler, { capture: true, passive: false });
+  }
 };
 
 
 if (window.isFeed()) insertButton();
 applyCustomLogo();
 
+let scheduled = false;
+
 const observer = new MutationObserver(() => {
-  const btn = document.getElementById(BUTTON_ID);
-  if (window.isFeed()) {
-    if (!btn) insertButton();
-  } else {
-    if (btn) btn.remove();
-  }
-  applyCustomLogo();
+  if (scheduled) return;
+  scheduled = true;
+
+  requestAnimationFrame(() => {
+    scheduled = false;
+
+    const btn = document.getElementById(BUTTON_ID);
+
+    if (window.isFeed()) {
+      if (!btn) insertButton();
+    } else {
+      btn?.remove();
+    }
+
+    applyCustomLogo();
+  });
 });
 
-observer.observe(document.body, { childList: true, subtree: true });
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
 
     // Observer for theme-color changes
     const themeMeta = document.querySelector('meta[name="theme-color"]');
@@ -415,4 +488,34 @@ observer.observe(document.body, { childList: true, subtree: true });
         reader.readAsDataURL(blob);
         return originalCreateObjectURL(blob);
     };
-})();
+})(); 
+
+(function() {
+  const applyNavOrder = () => {
+    const swapEnabled = window.SettingsBridge?.isNavSwapEnabled?.() ?? false;
+
+    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+    const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
+      .find(span => span.textContent === '󱥆');
+    const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
+
+    if (!logoBtn || !homeRow) return;
+
+    const logoRow = logoBtn.parentElement;
+    const commonAncestor = homeRow.parentElement;
+
+    if (!commonAncestor || logoRow.parentElement !== commonAncestor) return;
+
+    if (swapEnabled) {
+      homeRow.style.setProperty('order', '0', 'important');
+      logoRow.style.setProperty('order', '1', 'important');
+    } else {
+      logoRow.style.setProperty('order', '0', 'important');
+      homeRow.style.setProperty('order', '1', 'important');
+    }
+
+    commonAncestor.style.setProperty('display', 'flex', 'important');
+    commonAncestor.style.setProperty('flex-direction', 'column', 'important');
+  };
+
+  
