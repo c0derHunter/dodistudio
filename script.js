@@ -492,46 +492,36 @@ observer.observe(document.body, {
 
 (function() {
   const applyNavOrder = () => {
-  const swapEnabled = window.SettingsBridge?.isNavSwapEnabled?.() ?? false;
+    const swapEnabled = window.SettingsBridge?.isNavSwapEnabled?.() ?? false;
 
-  const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-  const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
-    .find(span => span.textContent === '󱥆');
-  const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
+    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+    const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
+      .find(span => span.textContent === '󱥆');
+    const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
 
-  if (!logoBtn || !homeRow) {
-    alert('STOP: logoBtn=' + !!logoBtn + ' homeRow=' + !!homeRow);
-    return;
-  }
+    if (!logoBtn || !homeRow) return;
 
-  const logoRow = logoBtn.parentElement;
-  const commonAncestor = homeRow.parentElement;
+    const logoRow = logoBtn.parentElement;
+    const commonAncestor = homeRow.parentElement;
 
-  alert(
-    'logoRow parent === commonAncestor? ' + (logoRow.parentElement === commonAncestor) + '\n' +
-    'commonAncestor exists? ' + !!commonAncestor + '\n' +
-    'swapEnabled: ' + swapEnabled + '\n' +
-    'firstChild currently: ' + commonAncestor?.firstElementChild?.className
-  );
+    if (!commonAncestor || logoRow.parentElement !== commonAncestor) return;
 
-  if (!commonAncestor || logoRow.parentElement !== commonAncestor) {
-    alert('STOP: safety check gagal');
-    return;
-  }
+    // Pastikan container jadi flex agar 'order' berlaku
+    if (commonAncestor.style.display !== 'flex') {
+      commonAncestor.style.display = 'flex';
+      commonAncestor.style.flexDirection = 'column';
+    }
 
-  if (swapEnabled) {
-    if (commonAncestor.firstElementChild !== logoRow) {
-      commonAncestor.insertBefore(logoRow, homeRow);
-      alert('SWAP DONE: logo dipindah ke atas');
+    if (swapEnabled) {
+      // ON: tab (icon row) di atas, logo di bawah
+      homeRow.style.order = '0';
+      logoRow.style.order = '1';
     } else {
-      alert('SKIP: logo sudah di atas');
+      // OFF: logo di atas, tab di bawah (normal/default)
+      logoRow.style.order = '0';
+      homeRow.style.order = '1';
     }
-  } else {
-    if (commonAncestor.firstElementChild !== homeRow) {
-      commonAncestor.insertBefore(homeRow, logoRow);
-    }
-  }
-};
+  };
 
   applyNavOrder();
 
@@ -539,31 +529,4 @@ observer.observe(document.body, {
     childList: true,
     subtree: true
   });
-})();    
-
-if (!window._debugLayoutLogged) {
-  window._debugLayoutLogged = true;
-  setTimeout(() => {
-    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-    const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
-      .find(span => span.textContent === '󱥆');
-    const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
-
-    const dumpChain = (el, label) => {
-      let out = label + ':\n';
-      let e = el;
-      for (let i = 0; i < 6 && e; i++) {
-        out += i + ': ' + e.tagName + (e.className ? '.' + String(e.className).substring(0,40) : '') + '\n';
-        e = e.parentElement;
-      }
-      return out;
-    };
-
-    alert(
-      'logoBtn found: ' + !!logoBtn + '\n' +
-      'homeRow found: ' + !!homeRow + '\n\n' +
-      dumpChain(logoBtn, 'LOGO CHAIN') + '\n' +
-      dumpChain(homeRow, 'HOME CHAIN')
-    );
-  }, 2000);
-}
+})();
