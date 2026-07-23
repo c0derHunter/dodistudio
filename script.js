@@ -489,3 +489,19 @@ observer.observe(document.body, {
         return originalCreateObjectURL(blob);
     };
 })(); 
+
+if (!window._debugLayoutLogged) {
+  window._debugLayoutLogged = true;
+  setTimeout(() => {
+    const banner = document.querySelector('div[role="banner"]');
+    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+    const bannerParent = banner?.parentElement;
+    const logoParent = logoBtn?.closest('div[role="button"]')?.parentElement?.parentElement;
+    
+    alert(
+      'Banner parent tag: ' + (bannerParent?.tagName + '.' + bannerParent?.className) + '\n\n' +
+      'Banner == logoParent? ' + (bannerParent === logoParent?.parentElement) + '\n\n' +
+      'Banner next sibling: ' + (banner?.nextElementSibling?.tagName + '.' + banner?.nextElementSibling?.className)
+    );
+  }, 2000);
+}                         
