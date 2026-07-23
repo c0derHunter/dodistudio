@@ -492,33 +492,46 @@ observer.observe(document.body, {
 
 (function() {
   const applyNavOrder = () => {
-    const swapEnabled = window.SettingsBridge?.isNavSwapEnabled?.() ?? false;
-alert('isNavSwapEnabled: ' + window.SettingsBridge?.isNavSwapEnabled?.());
-    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-    const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
-      .find(span => span.textContent === '󱥆');
-    const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
+  const swapEnabled = window.SettingsBridge?.isNavSwapEnabled?.() ?? false;
 
-    if (!logoBtn || !homeRow) return;
+  const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+  const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
+    .find(span => span.textContent === '󱥆');
+  const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
 
-    const logoRow = logoBtn.parentElement;
-    const commonAncestor = homeRow.parentElement;
+  if (!logoBtn || !homeRow) {
+    alert('STOP: logoBtn=' + !!logoBtn + ' homeRow=' + !!homeRow);
+    return;
+  }
 
-    // safety check: pastikan memang sibling di parent yang sama
-    if (!commonAncestor || logoRow.parentElement !== commonAncestor) return;
+  const logoRow = logoBtn.parentElement;
+  const commonAncestor = homeRow.parentElement;
 
-    if (swapEnabled) {
-      // ON: logo di atas, home row di bawah
-      if (commonAncestor.firstElementChild !== logoRow) {
-        commonAncestor.insertBefore(logoRow, homeRow);
-      }
+  alert(
+    'logoRow parent === commonAncestor? ' + (logoRow.parentElement === commonAncestor) + '\n' +
+    'commonAncestor exists? ' + !!commonAncestor + '\n' +
+    'swapEnabled: ' + swapEnabled + '\n' +
+    'firstChild currently: ' + commonAncestor?.firstElementChild?.className
+  );
+
+  if (!commonAncestor || logoRow.parentElement !== commonAncestor) {
+    alert('STOP: safety check gagal');
+    return;
+  }
+
+  if (swapEnabled) {
+    if (commonAncestor.firstElementChild !== logoRow) {
+      commonAncestor.insertBefore(logoRow, homeRow);
+      alert('SWAP DONE: logo dipindah ke atas');
     } else {
-      // OFF: kembali normal (home row di atas, logo di bawah)
-      if (commonAncestor.firstElementChild !== homeRow) {
-        commonAncestor.insertBefore(homeRow, logoRow);
-      }
+      alert('SKIP: logo sudah di atas');
     }
-  };
+  } else {
+    if (commonAncestor.firstElementChild !== homeRow) {
+      commonAncestor.insertBefore(homeRow, logoRow);
+    }
+  }
+};
 
   applyNavOrder();
 
