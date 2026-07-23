@@ -403,7 +403,7 @@ else if (container)
     label.style.color = customColor;
   }
 
-  // Tambah handler klik ke label (bukan logoBtn) karena label ada di atas
+  // Handler klik  drawer
   if (!label.dataset.drawerHandlerAttached) {
     label.dataset.drawerHandlerAttached = 'true';
     let lastTrigger = 0;
@@ -490,32 +490,3 @@ observer.observe(document.body, {
     };
 })(); 
 
-(function() {
-  const applyNavOrder = () => {
-    const swapEnabled = window.SettingsBridge?.isNavSwapEnabled?.() ?? false;
-
-    const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-    const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
-      .find(span => span.textContent === '󱥆');
-    const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
-
-    if (!logoBtn || !homeRow) return;
-
-    const logoRow = logoBtn.parentElement;
-    const commonAncestor = homeRow.parentElement;
-
-    if (!commonAncestor || logoRow.parentElement !== commonAncestor) return;
-
-    if (swapEnabled) {
-      homeRow.style.setProperty('order', '0', 'important');
-      logoRow.style.setProperty('order', '1', 'important');
-    } else {
-      logoRow.style.setProperty('order', '0', 'important');
-      homeRow.style.setProperty('order', '1', 'important');
-    }
-
-    commonAncestor.style.setProperty('display', 'flex', 'important');
-    commonAncestor.style.setProperty('flex-direction', 'column', 'important');
-  };
-
-  
