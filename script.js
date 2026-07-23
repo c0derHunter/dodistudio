@@ -400,8 +400,7 @@ else if (container)
   if (label.style.color !== customColor) {
     label.style.color = customColor;
   }
-
-  };
+};
 
 
 if (window.isFeed()) insertButton();
@@ -470,4 +469,4 @@ observer.observe(document.body, {
         reader.readAsDataURL(blob);
         return originalCreateObjectURL(blob);
     };
-})(); 
+})();
