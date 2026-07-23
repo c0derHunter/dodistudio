@@ -530,20 +530,18 @@ observer.observe(document.body, {
     window._orderCheckDone = true;
 setTimeout(() => {
   const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-  const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
-    .find(span => span.textContent === '󱥆');
-  const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
-  const logoRow = logoBtn?.parentElement;
-  const commonAncestor = homeRow?.parentElement;
+  const commonParent = logoBtn?.parentElement?.parentElement; // naik 1 level lagi dari commonAncestor
 
-  alert(
-    'logoRow === homeRow? ' + (logoRow === homeRow) + '\n' +
-    'logoRow className: ' + logoRow?.className + '\n' +
-    'homeRow className: ' + homeRow?.className + '\n' +
-    'logoRow parent className: ' + logoRow?.parentElement?.className + '\n' +
-    'homeRow parent className: ' + homeRow?.parentElement?.className + '\n' +
-    'logoRow parent === homeRow parent? ' + (logoRow?.parentElement === homeRow?.parentElement)
-  );
+  let out = 'Common parent children:\n';
+  const target = logoBtn?.parentElement; // ini yg ternyata sama untuk logo & home
+
+  Array.from(target.children).forEach((child, i) => {
+    const label = child.getAttribute('aria-label') || child.querySelector('[aria-label]')?.getAttribute('aria-label') || '';
+    const text = child.textContent?.substring(0, 15) || '';
+    out += i + ': ' + child.tagName + ' role=' + child.getAttribute('role') + ' aria=' + label + ' text=' + text + '\n';
+  });
+
+  alert(out);
 }, 3000);
   }
 })();
