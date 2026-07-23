@@ -529,18 +529,11 @@ observer.observe(document.body, {
   if (!window._orderCheckDone) {
     window._orderCheckDone = true;
 setTimeout(() => {
-  const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-  const commonParent = logoBtn?.parentElement?.parentElement; // naik 1 level lagi dari commonAncestor
-
-  let out = 'Common parent children:\n';
-  const target = logoBtn?.parentElement; // ini yg ternyata sama untuk logo & home
-
-  Array.from(target.children).forEach((child, i) => {
-    const label = child.getAttribute('aria-label') || child.querySelector('[aria-label]')?.getAttribute('aria-label') || '';
-    const text = child.textContent?.substring(0, 15) || '';
-    out += i + ': ' + child.tagName + ' role=' + child.getAttribute('role') + ' aria=' + label + ' text=' + text + '\n';
+  const allButtons = Array.from(document.querySelectorAll('div[role="button"]'));
+  let out = 'Semua tombol dengan aria-label (20 pertama):\n';
+  allButtons.slice(0, 20).forEach((btn, i) => {
+    out += i + ': ' + (btn.getAttribute('aria-label') || '(tanpa aria-label)') + '\n';
   });
-
   alert(out);
 }, 3000);
   }
