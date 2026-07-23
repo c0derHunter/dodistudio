@@ -388,9 +388,7 @@ else if (container)
       font-size: 25px;
       letter-spacing: -0.5px;
       white-space: nowrap;
-      pointer-events: auto;
-      z-index: 99999;
-      cursor: pointer;
+      pointer-events: none;
     `;
     logoBtn.style.position = 'relative';
     logoBtn.appendChild(label);
@@ -403,23 +401,7 @@ else if (container)
     label.style.color = customColor;
   }
 
-  // Tambah handler klik ke label (bukan logoBtn) karena label ada di atas
-  if (!label.dataset.drawerHandlerAttached) {
-    label.dataset.drawerHandlerAttached = 'true';
-    let lastTrigger = 0;
-    const handler = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      const now = Date.now();
-      if (now - lastTrigger < 500) return; // cegah double-trigger dari pointerdown+touchstart
-      lastTrigger = now;
-      window.SettingsBridge?.openDrawer?.();
-    };
-    label.addEventListener('pointerdown', handler, { capture: true });
-    label.addEventListener('touchstart', handler, { capture: true, passive: false });
-  }
-};
+  };
 
 
 if (window.isFeed()) insertButton();
