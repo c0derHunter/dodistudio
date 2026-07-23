@@ -518,28 +518,4 @@ observer.observe(document.body, {
     commonAncestor.style.setProperty('flex-direction', 'column', 'important');
   };
 
-  applyNavOrder();
-
-  new MutationObserver(() => applyNavOrder()).observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-
-  // CEK SEKALI SETELAH 3 DETIK
-  if (!window._orderCheckDone) {
-    window._orderCheckDone = true;
-setTimeout(() => {
-  const all = Array.from(document.querySelectorAll('[role="button"], [role="link"]'));
-  const topArea = all.filter(el => {
-    const rect = el.getBoundingClientRect();
-    return rect.top >= 0 && rect.top < 150 && rect.height > 0;
-  });
-
-  let out = 'Elemen di area atas (y<150):\n';
-  topArea.forEach((el, i) => {
-    out += i + ': role=' + el.getAttribute('role') + ' aria=' + (el.getAttribute('aria-label') || '-') + ' top=' + Math.round(el.getBoundingClientRect().top) + '\n';
-  });
-  alert(out || 'KOSONG - gak ada elemen ketemu');
-}, 3000);
-  }
-})();
+  
