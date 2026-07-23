@@ -529,12 +529,17 @@ observer.observe(document.body, {
   if (!window._orderCheckDone) {
     window._orderCheckDone = true;
 setTimeout(() => {
-  const allButtons = Array.from(document.querySelectorAll('div[role="button"]'));
-  let out = 'Semua tombol dengan aria-label (20 pertama):\n';
-  allButtons.slice(0, 20).forEach((btn, i) => {
-    out += i + ': ' + (btn.getAttribute('aria-label') || '(tanpa aria-label)') + '\n';
+  const all = Array.from(document.querySelectorAll('[role="button"], [role="link"]'));
+  const topArea = all.filter(el => {
+    const rect = el.getBoundingClientRect();
+    return rect.top >= 0 && rect.top < 150 && rect.height > 0;
   });
-  alert(out);
+
+  let out = 'Elemen di area atas (y<150):\n';
+  topArea.forEach((el, i) => {
+    out += i + ': role=' + el.getAttribute('role') + ' aria=' + (el.getAttribute('aria-label') || '-') + ' top=' + Math.round(el.getBoundingClientRect().top) + '\n';
+  });
+  alert(out || 'KOSONG - gak ada elemen ketemu');
 }, 3000);
   }
 })();
