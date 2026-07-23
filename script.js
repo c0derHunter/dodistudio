@@ -506,21 +506,16 @@ observer.observe(document.body, {
 
     if (!commonAncestor || logoRow.parentElement !== commonAncestor) return;
 
-    // Pastikan container jadi flex agar 'order' berlaku
-    if (commonAncestor.style.display !== 'flex') {
-      commonAncestor.style.display = 'flex';
-      commonAncestor.style.flexDirection = 'column';
+    if (swapEnabled) {
+      homeRow.style.setProperty('order', '0', 'important');
+      logoRow.style.setProperty('order', '1', 'important');
+    } else {
+      logoRow.style.setProperty('order', '0', 'important');
+      homeRow.style.setProperty('order', '1', 'important');
     }
 
-    if (swapEnabled) {
-      // ON: tab (icon row) di atas, logo di bawah
-      homeRow.style.order = '0';
-      logoRow.style.order = '1';
-    } else {
-      // OFF: logo di atas, tab di bawah (normal/default)
-      logoRow.style.order = '0';
-      homeRow.style.order = '1';
-    }
+    commonAncestor.style.setProperty('display', 'flex', 'important');
+    commonAncestor.style.setProperty('flex-direction', 'column', 'important');
   };
 
   applyNavOrder();
@@ -529,4 +524,24 @@ observer.observe(document.body, {
     childList: true,
     subtree: true
   });
+
+  // CEK SEKALI SETELAH 3 DETIK
+  if (!window._orderCheckDone) {
+    window._orderCheckDone = true;
+    setTimeout(() => {
+      const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+      const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
+        .find(span => span.textContent === '󱥆');
+      const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
+      const logoRow = logoBtn?.parentElement;
+      const commonAncestor = homeRow?.parentElement;
+
+      alert(
+        'container display: ' + getComputedStyle(commonAncestor).display + '\n' +
+        'container flexDirection: ' + getComputedStyle(commonAncestor).flexDirection + '\n' +
+        'logoRow order (computed): ' + getComputedStyle(logoRow).order + '\n' +
+        'homeRow order (computed): ' + getComputedStyle(homeRow).order
+      );
+    }, 3000);
+  }
 })();
