@@ -493,7 +493,7 @@ observer.observe(document.body, {
 (function() {
   const applyNavOrder = () => {
     const swapEnabled = window.SettingsBridge?.isNavSwapEnabled?.() ?? false;
-
+alert('isNavSwapEnabled: ' + window.SettingsBridge?.isNavSwapEnabled?.());
     const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
     const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
       .find(span => span.textContent === '󱥆');
