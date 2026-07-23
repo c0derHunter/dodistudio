@@ -528,20 +528,22 @@ observer.observe(document.body, {
   // CEK SEKALI SETELAH 3 DETIK
   if (!window._orderCheckDone) {
     window._orderCheckDone = true;
-    setTimeout(() => {
-      const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-      const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
-        .find(span => span.textContent === '󱥆');
-      const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
-      const logoRow = logoBtn?.parentElement;
-      const commonAncestor = homeRow?.parentElement;
+setTimeout(() => {
+  const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
+  const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
+    .find(span => span.textContent === '󱥆');
+  const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
+  const logoRow = logoBtn?.parentElement;
+  const commonAncestor = homeRow?.parentElement;
 
-      alert(
-        'container display: ' + getComputedStyle(commonAncestor).display + '\n' +
-        'container flexDirection: ' + getComputedStyle(commonAncestor).flexDirection + '\n' +
-        'logoRow order (computed): ' + getComputedStyle(logoRow).order + '\n' +
-        'homeRow order (computed): ' + getComputedStyle(homeRow).order
-      );
-    }, 3000);
+  alert(
+    'logoRow === homeRow? ' + (logoRow === homeRow) + '\n' +
+    'logoRow className: ' + logoRow?.className + '\n' +
+    'homeRow className: ' + homeRow?.className + '\n' +
+    'logoRow parent className: ' + logoRow?.parentElement?.className + '\n' +
+    'homeRow parent className: ' + homeRow?.parentElement?.className + '\n' +
+    'logoRow parent === homeRow parent? ' + (logoRow?.parentElement === homeRow?.parentElement)
+  );
+}, 3000);
   }
 })();
