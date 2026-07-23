@@ -493,15 +493,26 @@ observer.observe(document.body, {
 if (!window._debugLayoutLogged) {
   window._debugLayoutLogged = true;
   setTimeout(() => {
-    const banner = document.querySelector('div[role="banner"]');
     const logoBtn = document.querySelector('div[role="button"][aria-label="Logo Facebook"]');
-    const bannerParent = banner?.parentElement;
-    const logoParent = logoBtn?.closest('div[role="button"]')?.parentElement?.parentElement;
-    
+    const homeIconSpan = Array.from(document.querySelectorAll('[role="button"] span'))
+      .find(span => span.textContent === '󱥆');
+    const homeRow = homeIconSpan?.closest('div[role="button"]')?.parentElement;
+
+    const dumpChain = (el, label) => {
+      let out = label + ':\n';
+      let e = el;
+      for (let i = 0; i < 6 && e; i++) {
+        out += i + ': ' + e.tagName + (e.className ? '.' + String(e.className).substring(0,40) : '') + '\n';
+        e = e.parentElement;
+      }
+      return out;
+    };
+
     alert(
-      'Banner parent tag: ' + (bannerParent?.tagName + '.' + bannerParent?.className) + '\n\n' +
-      'Banner == logoParent? ' + (bannerParent === logoParent?.parentElement) + '\n\n' +
-      'Banner next sibling: ' + (banner?.nextElementSibling?.tagName + '.' + banner?.nextElementSibling?.className)
+      'logoBtn found: ' + !!logoBtn + '\n' +
+      'homeRow found: ' + !!homeRow + '\n\n' +
+      dumpChain(logoBtn, 'LOGO CHAIN') + '\n' +
+      dumpChain(homeRow, 'HOME CHAIN')
     );
   }, 2000);
-}                         
+}
